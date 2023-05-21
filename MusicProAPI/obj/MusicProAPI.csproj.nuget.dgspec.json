@@ -48,6 +48,14 @@
               "target": "Package",
               "version": "[6.2.3, )"
             },
+            "System.IO": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.IO.FileSystem": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
             "System.Linq": {
               "target": "Package",
               "version": "[4.3.0, )"
