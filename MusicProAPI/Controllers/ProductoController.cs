@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicProAPI.Modelos;
+using System.Collections.Generic;
+using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MusicProAPI.Controllers
 {
 	[ApiController]
-	[Route("[controller]")]
+	[Route("productos")]
 	public class ProductoController : ControllerBase
 	{
 		private static string[] Productos = new string[]
@@ -20,18 +23,25 @@ namespace MusicProAPI.Controllers
 			_logger = logger;
 		}
 
-		[HttpGet(Name = "GetProductos")]
-
-		public IEnumerable<Producto> Get()
+		[HttpGet("listaProductos")]
+		public List<Producto> Get()
 		{
-			return Enumerable.Range(1, 20).Select(index => new Producto
+			List<Producto> ListProduct = new List<Producto>();
+
+			for (int i = 0; i < Productos.Count(); i++)
 			{
-				Id = index,
-				Nommbre = Productos[Random.Shared.Next(Productos.Length)],
-				Descripcion = "Lorem ipsum dolor sit amet, consectetur adipiscing",
-				Image = "Image Default",
-				ImageURL = "URL Image Default"
-			}).ToArray();
+				var obj = new Producto();
+
+				obj.Id = i + 1;
+				obj.Nommbre = Productos[i];
+				obj.Descripcion = "Lorem ipsum dolor sit amet, consectetur adipiscing";
+				obj.Image = "Image Default";
+				obj.ImageURL = "URL Image Default";
+
+				ListProduct.Add(obj);
+			}
+
+			return ListProduct;
 		}
 
 	}
