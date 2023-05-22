@@ -6,17 +6,15 @@ namespace MusicProAPI.Controllers
 {
 	[ApiController]
 	[Route("Usuario")]
-	public class UsuarioController : ControllerBase
+	public class UsuarioController
 	{
-		public string directorio = "C:\\txtMusicPro";
+		GlobalMetods metods = new GlobalMetods();
 
 		[HttpGet]
 		[Route("GetUsuarios")]
 		public dynamic GetUsuarios()
 		{
-			VerificarDirectorio("Usuarios.txt");
-
-			string[] list = System.IO.File.ReadAllLines(directorio + "\\Usuarios.txt");
+			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
@@ -47,11 +45,9 @@ namespace MusicProAPI.Controllers
 
 		[HttpGet]
 		[Route("GetUsuario")]
-		public dynamic GetUsuario(int id)
+		public dynamic GetUsuario(int id_usuario)
 		{
-			VerificarDirectorio("Usuarios.txt");
-
-			string[] list = System.IO.File.ReadAllLines(directorio + "\\Usuarios.txt");
+			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
@@ -69,7 +65,7 @@ namespace MusicProAPI.Controllers
 			{
 				string[] splitArr = list[i].Split("||");
 
-				if (Convert.ToInt32(splitArr[0]) == id)
+				if (Convert.ToInt32(splitArr[0]) == id_usuario)
 				{
 					Usuario.Id = Convert.ToInt32(splitArr[0]);
 					Usuario.Nombre = splitArr[1];
@@ -85,7 +81,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + id + "' no existe en los registros"
+					mesage = "El usaurio '" + id_usuario + "' no existe en los registros"
 				};
 			}
 
@@ -96,9 +92,15 @@ namespace MusicProAPI.Controllers
 		[Route("CrearUsuario")]
 		public dynamic CrearUsuario(Usuario usuario)
 		{
-			VerificarDirectorio("Usuarios.txt");
+			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.correo) || string.IsNullOrEmpty(usuario.password))
+			{
+				return new
+				{
+					message = "Faltan datos para almacenar el usaurio",
+				};
+			}
 
-			string[] list = System.IO.File.ReadAllLines(directorio + "\\Usuarios.txt");
+			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 1)
 			{
@@ -120,18 +122,20 @@ namespace MusicProAPI.Controllers
 				};
 			}
 
-			if (usuario.correo.Trim().Replace("|", "") == usuario.correo)
+			for (int i = 0; i < list.Count(); i++)
 			{
-				return new
+				string[] splitArr = list[i].Split("||");
+
+				if (splitArr[3] == usuario.correo)
 				{
-					mesage = "El corre ingresado ya existe en los registros"
-				};
+					return new
+					{
+						mesage = "El corre ingresado ya existe en los registros"
+					};
+				}
 			}
 
-			StreamWriter sw = System.IO.File.AppendText(directorio + "\\Usuarios.txt");
-			
-			sw.WriteLine(usuario.Id + "||" + usuario.Nombre.Trim().Replace("|","") + "||" + usuario.Apellido.Trim().Replace("|", "") + "||" + usuario.correo.Trim().Replace("|", "") + "||" + usuario.password.Trim().Replace("|", ""));
-			sw.Close();
+			metods.saveLineFile("Usuarios", String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id, usuario.Nombre.Trim().Replace("|", ""), usuario.Apellido.Trim().Replace("|", ""), usuario.correo.Trim().Replace("|", ""), usuario.password.Trim().Replace("|", "")));
 
 			return new
 			{
@@ -144,9 +148,15 @@ namespace MusicProAPI.Controllers
 		[Route("ModificarUsuario")]
 		public dynamic ModificarUsuario(Usuario usuario)
 		{
-			VerificarDirectorio("Usuarios.txt");
+			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.correo) || string.IsNullOrEmpty(usuario.password))
+			{
+				return new
+				{
+					message = "Faltan datos para almacenar el usaurio",
+				};
+			}
 
-			string[] list = System.IO.File.ReadAllLines(directorio + "\\Usuarios.txt");
+			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
@@ -165,9 +175,10 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == usuario.Id)
 				{
-					content.Add(Convert.ToInt32(splitArr[0]) + "||" + usuario.Nombre.Trim().Replace("|", "") + "||" + usuario.Apellido.Trim().Replace("|", "") + "||" + usuario.correo.Trim().Replace("|", "") + "||" + usuario.password.Trim().Replace("|", ""));
-					encontrado = true;
+					usuario.Id = Convert.ToInt32(splitArr[0]);
 
+					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id, usuario.Nombre.Trim().Replace("|", ""), usuario.Apellido.Trim().Replace("|", ""), usuario.correo.Trim().Replace("|", ""), usuario.password.Trim().Replace("|", "")));
+					encontrado = true;
 					continue;
 				}
 
@@ -182,7 +193,7 @@ namespace MusicProAPI.Controllers
 				};
 			}
 
-			System.IO.File.WriteAllLines(directorio + "\\Usuarios.txt", content);
+			metods.updateLineFile("Usuarios", content);
 
 			return new
 			{
@@ -193,11 +204,9 @@ namespace MusicProAPI.Controllers
 
 		[HttpDelete]
 		[Route("EliminarUsuario")]
-		public dynamic EliminarUsuario(int id)
+		public dynamic EliminarUsuario(int id_usuario)
 		{
-			VerificarDirectorio("Usuarios.txt");
-
-			string[] list = System.IO.File.ReadAllLines(directorio + "\\Usuarios.txt");
+			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
@@ -214,9 +223,12 @@ namespace MusicProAPI.Controllers
 			{
 				string[] splitArr = list[i].Split("||");
 
-				if (Convert.ToInt32(splitArr[0]) != id)
+				if (Convert.ToInt32(splitArr[0]) != id_usuario)
 				{
 					content.Add(list[i]);
+				}
+				else
+				{
 					encontrado = true;
 				}
 			}
@@ -225,29 +237,16 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + id + "' no existe en los registros"
+					mesage = "El usaurio '" + id_usuario + "' no existe en los registros"
 				};
 			}
 
-			System.IO.File.WriteAllLines(directorio + "\\Usuarios.txt", content);
+			metods.updateLineFile("Usuarios", content);
 
 			return new
 			{
-				mesage = "El usaurio '" + id + "' fue eliminado exitosamente"
+				mesage = "El usaurio '" + id_usuario + "' fue eliminado exitosamente"
 			};
-		}
-
-		private void VerificarDirectorio(string NomDoc)
-		{
-			if (!Directory.Exists(directorio))
-			{
-				Directory.CreateDirectory(directorio);
-			}
-
-			if (!System.IO.File.Exists(directorio + "\\" + NomDoc))
-			{
-				System.IO.File.Create(directorio + "\\" + NomDoc).Close();
-			}
 		}
 	}
 }

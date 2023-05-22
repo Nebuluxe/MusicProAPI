@@ -9,9 +9,9 @@
 		public string Marca { get; set; }
 		public int Categoria_id { get; set; }
 		public int Precio { get; set; }
-		//public string StockActual { get; set; }
 		public string fechaCreacion { get; set; }
 		public string fechaModificacion { get; set; }
+		public bool estado { get; set; }
 	}
 	
 }
