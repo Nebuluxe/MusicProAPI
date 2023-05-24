@@ -9,9 +9,9 @@
 
 	public class DetalleCarritoCompra
 	{
-		public int Id_carrito { get; set; }
-		public int Id_producto { get; set; }
-		public int cantidad { get; set; }
+		public int Id_Carrito { get; set; }
+		public int Id_Producto { get; set; }
+		public int Pantidad { get; set; }
 	
 	}
 }

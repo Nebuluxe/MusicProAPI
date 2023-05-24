@@ -31,11 +31,11 @@ namespace MusicProAPI.Controllers
 				string[] splitArr = list[i].Split("||");
 				Usuario Usuario = new Usuario();
 
-				Usuario.Id = Convert.ToInt32(splitArr[0]);
+				Usuario.Id_Usuario = Convert.ToInt32(splitArr[0]);
 				Usuario.Nombre = splitArr[1];
 				Usuario.Apellido = splitArr[2];
-				Usuario.correo = splitArr[3];
-				Usuario.password = splitArr[4];
+				Usuario.Correo = splitArr[3];
+				Usuario.Password = splitArr[4];
 
 				Usuarios.Add(Usuario);
 			}
@@ -67,11 +67,11 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_usuario)
 				{
-					Usuario.Id = Convert.ToInt32(splitArr[0]);
+					Usuario.Id_Usuario = Convert.ToInt32(splitArr[0]);
 					Usuario.Nombre = splitArr[1];
 					Usuario.Apellido = splitArr[2];
-					Usuario.correo = splitArr[3];
-					Usuario.password = splitArr[4];
+					Usuario.Correo = splitArr[3];
+					Usuario.Password = splitArr[4];
 					encontrado = true;
 					break;
 				}
@@ -92,7 +92,7 @@ namespace MusicProAPI.Controllers
 		[Route("CrearUsuario")]
 		public dynamic CrearUsuario(Usuario usuario)
 		{
-			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.correo) || string.IsNullOrEmpty(usuario.password))
+			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.Correo) || string.IsNullOrEmpty(usuario.Password))
 			{
 				return new
 				{
@@ -105,16 +105,16 @@ namespace MusicProAPI.Controllers
 			if (list.Count() == 1)
 			{
 				string[] splitArr = list[0].Split("||");
-				usuario.Id = Convert.ToInt32(splitArr[0]) + 1;
+				usuario.Id_Usuario = Convert.ToInt32(splitArr[0]) + 1;
 			}
 			else
 			{
-				usuario.Id = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
+				usuario.Id_Usuario = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
 			}
 
 			string patron = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
 
-			if (!Regex.IsMatch(usuario.correo.Trim().Replace("|", ""), patron))
+			if (!Regex.IsMatch(usuario.Correo.Trim().Replace("|", ""), patron))
 			{
 				return new
 				{
@@ -126,7 +126,7 @@ namespace MusicProAPI.Controllers
 			{
 				string[] splitArr = list[i].Split("||");
 
-				if (splitArr[3] == usuario.correo)
+				if (splitArr[3] == usuario.Correo)
 				{
 					return new
 					{
@@ -135,7 +135,7 @@ namespace MusicProAPI.Controllers
 				}
 			}
 
-			metods.saveLineFile("Usuarios", String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id, usuario.Nombre.Trim().Replace("|", ""), usuario.Apellido.Trim().Replace("|", ""), usuario.correo.Trim().Replace("|", ""), usuario.password.Trim().Replace("|", "")));
+			metods.saveLineFile("Usuarios", String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id_Usuario, usuario.Nombre.Trim().Replace("|", ""), usuario.Apellido.Trim().Replace("|", ""), usuario.Correo.Trim().Replace("|", ""), usuario.Password.Trim().Replace("|", "")));
 
 			return new
 			{
@@ -148,14 +148,6 @@ namespace MusicProAPI.Controllers
 		[Route("ModificarUsuario")]
 		public dynamic ModificarUsuario(Usuario usuario)
 		{
-			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.correo) || string.IsNullOrEmpty(usuario.password))
-			{
-				return new
-				{
-					message = "Faltan datos para almacenar el usaurio",
-				};
-			}
-
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
@@ -166,6 +158,19 @@ namespace MusicProAPI.Controllers
 				};
 			}
 
+			if (!string.IsNullOrEmpty(usuario.Correo))
+			{
+				string patron = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
+				if (!Regex.IsMatch(usuario.Correo.Trim().Replace("|", ""), patron))
+				{
+					return new
+					{
+						mesage = "Formato de correo incorrecto"
+					};
+				}
+			}
+
 			bool encontrado = false;
 			List<string> content = new List<string>();
 
@@ -173,11 +178,11 @@ namespace MusicProAPI.Controllers
 			{
 				string[] splitArr = list[i].Split("||");
 
-				if (Convert.ToInt32(splitArr[0]) == usuario.Id)
+				if (Convert.ToInt32(splitArr[0]) == usuario.Id_Usuario)
 				{
-					usuario.Id = Convert.ToInt32(splitArr[0]);
+					usuario.Id_Usuario = Convert.ToInt32(splitArr[0]);
 
-					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id, usuario.Nombre.Trim().Replace("|", ""), usuario.Apellido.Trim().Replace("|", ""), usuario.correo.Trim().Replace("|", ""), usuario.password.Trim().Replace("|", "")));
+					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id_Usuario, string.IsNullOrEmpty(usuario.Nombre) ? splitArr[1] : usuario.Nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(usuario.Apellido) ? splitArr[2] : usuario.Apellido.Trim().Replace("|", ""), string.IsNullOrEmpty(usuario.Correo) ? splitArr[3] : usuario.Correo.Trim().Replace("|", ""), string.IsNullOrEmpty(usuario.Password) ? splitArr[4] : usuario.Password.Trim().Replace("|", "")));
 					encontrado = true;
 					continue;
 				}
@@ -189,7 +194,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + usuario.Id + "' no existe en los registros"
+					mesage = "El usaurio '" + usuario.Id_Usuario + "' no existe en los registros"
 				};
 			}
 
@@ -198,7 +203,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				mesage = "Usuario modificado",
-				result = usuario
+				result = GetUsuario(usuario.Id_Usuario)
 			};
 		}
 

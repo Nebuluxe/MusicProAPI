@@ -2,7 +2,7 @@
 {
 	public class Stock
 	{
-		public int Id_producto { get; set; }
-		public int cantidadStock { get; set; }
+		public int Id_Producto { get; set; }
+		public int CantidadStock { get; set; }
 	}
 }

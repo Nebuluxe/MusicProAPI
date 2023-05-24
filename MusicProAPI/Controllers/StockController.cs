@@ -31,8 +31,8 @@ namespace MusicProAPI.Controllers
 				string[] splitArr = list[i].Split("||");
 				Stock stock = new Stock();
 
-				stock.Id_producto = Convert.ToInt32(splitArr[0]);
-				stock.cantidadStock = Convert.ToInt32(splitArr[1]);
+				stock.Id_Producto = Convert.ToInt32(splitArr[0]);
+				stock.CantidadStock = Convert.ToInt32(splitArr[1]);
 
 				liststock.Add(stock);
 			}
@@ -64,8 +64,8 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_producto)
 				{
-					stock.Id_producto = Convert.ToInt32(splitArr[0]);
-					stock.cantidadStock = Convert.ToInt32(splitArr[1]);
+					stock.Id_Producto = Convert.ToInt32(splitArr[0]);
+					stock.CantidadStock = Convert.ToInt32(splitArr[1]);
 
 					encontrado = true;
 					break;
@@ -138,8 +138,8 @@ namespace MusicProAPI.Controllers
 			}
 
 			Stock stock = new Stock();
-			stock.Id_producto = id_producto;
-			stock.cantidadStock = cantidad;
+			stock.Id_Producto = id_producto;
+			stock.CantidadStock = cantidad;
 
 			metods.saveLineFile("Stock", String.Format("{0}||{1}", id_producto, cantidad));
 
@@ -207,8 +207,8 @@ namespace MusicProAPI.Controllers
 					content.Add(String.Format("{0}||{1}", id_producto, cantidad + Convert.ToInt32(splitArr[i])));
 					encontrado = true;
 
-					stock.Id_producto = id_producto;
-					stock.cantidadStock = cantidad + Convert.ToInt32(splitArr[i]);
+					stock.Id_Producto = id_producto;
+					stock.CantidadStock = cantidad + Convert.ToInt32(splitArr[i]);
 
 					continue;
 				}
@@ -220,7 +220,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay registros de stock para el producto '" + stock.Id_producto + "'"
+					mesage = "No hay registros de stock para el producto '" + stock.Id_Producto + "'"
 				};
 			}
 
@@ -296,10 +296,10 @@ namespace MusicProAPI.Controllers
 						};
 					}
 
-					stock.Id_producto = id_producto;
-					stock.cantidadStock = Convert.ToInt32(splitArr[1]) - cantidad;
+					stock.Id_Producto = id_producto;
+					stock.CantidadStock = Convert.ToInt32(splitArr[1]) - cantidad;
 
-					content.Add(String.Format("{0}||{1}", stock.Id_producto, stock.cantidadStock));
+					content.Add(String.Format("{0}||{1}", stock.Id_Producto, stock.CantidadStock));
 					encontrado = true;
 					continue;
 				}
@@ -311,7 +311,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay registros de stock para el producto '" + stock.Id_producto + "'"
+					mesage = "No hay registros de stock para el producto '" + stock.Id_Producto + "'"
 				};
 			}
 

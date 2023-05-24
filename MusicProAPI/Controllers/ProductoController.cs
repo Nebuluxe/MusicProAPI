@@ -30,16 +30,16 @@ namespace MusicProAPI.Controllers
 				string[] splitArr = list[i].Split("||");
 				Producto producto = new Producto();
 
-				producto.Id = Convert.ToInt32(splitArr[0]);
+				producto.Id_Producto = Convert.ToInt32(splitArr[0]);
 				producto.Nombre = splitArr[1];
 				producto.Descripcion = splitArr[2];
 				producto.SerieProducto = splitArr[3];
 				producto.Marca = splitArr[4];
 				producto.Categoria_id = Convert.ToInt32(splitArr[5]);
 				producto.Precio = Convert.ToInt32(splitArr[6]);
-				producto.fechaCreacion = splitArr[7];
-				producto.fechaModificacion = splitArr[8];
-				producto.estado = Convert.ToBoolean(splitArr[9]);
+				producto.FechaCreacion = splitArr[7];
+				producto.FechaModificacion = splitArr[8];
+				producto.Estado = Convert.ToBoolean(splitArr[9]);
 
 				productos.Add(producto);
 			}
@@ -71,16 +71,16 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_producto)
 				{
-					producto.Id = Convert.ToInt32(splitArr[0]);
+					producto.Id_Producto = Convert.ToInt32(splitArr[0]);
 					producto.Nombre = splitArr[1];
 					producto.Descripcion = splitArr[2];
 					producto.SerieProducto = splitArr[3];
 					producto.Marca = splitArr[4];
 					producto.Categoria_id = Convert.ToInt32(splitArr[5]);
 					producto.Precio = Convert.ToInt32(splitArr[6]);
-					producto.fechaCreacion = splitArr[7];
-					producto.fechaModificacion = splitArr[8];
-					producto.estado = Convert.ToBoolean(splitArr[9]);
+					producto.FechaCreacion = splitArr[7];
+					producto.FechaModificacion = splitArr[8];
+					producto.Estado = Convert.ToBoolean(splitArr[9]);
 
 					encontrado = true;
 					break;
@@ -127,7 +127,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					message = "La categoria '" + producto.Id + "' no existe en los registros",
+					message = "La categoria '" + producto.Id_Producto + "' no existe en los registros",
 				};
 			}
 
@@ -136,18 +136,18 @@ namespace MusicProAPI.Controllers
 			if (list.Count() == 1)
 			{
 				string[] splitArr = list[0].Split("||");
-				producto.Id = Convert.ToInt32(splitArr[0]) + 1;
+				producto.Id_Producto = Convert.ToInt32(splitArr[0]) + 1;
 			}
 			else
 			{
-				producto.Id = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
+				producto.Id_Producto = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
 			}
 
-			producto.estado = true;
-			producto.fechaCreacion = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
-			producto.fechaModificacion = "00-00-0000 00:00:00";
+			producto.Estado = true;
+			producto.FechaCreacion = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+			producto.FechaModificacion = "00-00-0000 00:00:00";
 
-			metods.saveLineFile("Productos", String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id, producto.Nombre.Trim().Replace("|", ""), producto.Descripcion.Trim().Replace("|", ""), producto.SerieProducto.Trim().Replace("|", ""), producto.Marca.Trim().Replace("|", ""), producto.Categoria_id, producto.Precio, producto.fechaCreacion.Trim().Replace("|", ""), producto.fechaModificacion.Trim().Replace("|", ""),producto.estado));
+			metods.saveLineFile("Productos", String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id_Producto, producto.Nombre.Trim().Replace("|", ""), producto.Descripcion.Trim().Replace("|", ""), producto.SerieProducto.Trim().Replace("|", ""), producto.Marca.Trim().Replace("|", ""), producto.Categoria_id, producto.Precio, producto.FechaCreacion.Trim().Replace("|", ""), producto.FechaModificacion.Trim().Replace("|", ""),producto.Estado));
 
 			return new
 			{
@@ -160,14 +160,6 @@ namespace MusicProAPI.Controllers
 		[Route("ModificarProducto")]
 		public dynamic ModificarProducto(Producto producto)
 		{
-			if (string.IsNullOrEmpty(producto.Nombre) || string.IsNullOrEmpty(producto.Descripcion) || string.IsNullOrEmpty(producto.SerieProducto) || string.IsNullOrEmpty(producto.Marca) || string.IsNullOrEmpty(producto.Marca))
-			{
-				return new
-				{
-					message = "Faltan datos para almacenar el producto",
-				};
-			}
-
 			string[] listCategorias = metods.getContentFile("CategoriaProductos");
 			bool catEncontrada = false;
 
@@ -185,7 +177,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					message = "La categoria '" + producto.Id + "' no existe en los registros",
+					message = "La categoria '" + producto.Id_Producto + "' no existe en los registros",
 				};
 			}
 
@@ -206,13 +198,13 @@ namespace MusicProAPI.Controllers
 			{
 				string[] splitArr = list[i].Split("||");
 
-				if (Convert.ToInt32(splitArr[0]) == producto.Id)
+				if (Convert.ToInt32(splitArr[0]) == producto.Id_Producto)
 				{
-					producto.Id = Convert.ToInt32(splitArr[0]);
-					producto.fechaCreacion = splitArr[6];
-					producto.fechaModificacion = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+					producto.Id_Producto = Convert.ToInt32(splitArr[0]);
+					producto.FechaCreacion = splitArr[6];
+					producto.FechaModificacion = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
 
-					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id, producto.Nombre.Trim().Replace("|", ""), producto.Descripcion.Trim().Replace("|", ""), producto.SerieProducto.Trim().Replace("|", ""), producto.Marca.Trim().Replace("|", ""), producto.Categoria_id, producto.Precio, producto.fechaCreacion.Trim().Replace("|", ""), producto.fechaModificacion.Trim().Replace("|", ""), producto.estado));
+					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id_Producto, string.IsNullOrEmpty(producto.Nombre) ? splitArr[1] : producto.Nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.Descripcion) ? splitArr[2] : producto.Descripcion.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.SerieProducto) ? splitArr[3] : producto.SerieProducto.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.Marca) ? splitArr[4] : producto.Marca.Trim().Replace("|", ""), producto.Categoria_id == 0 ? splitArr[5] : producto.Categoria_id, producto.Precio == 0 ? splitArr[6] : producto.Precio, producto.FechaCreacion.Trim().Replace("|", ""), producto.FechaModificacion.Trim().Replace("|", ""), producto.Estado));
 
 					encontrado = true;
 
@@ -226,7 +218,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + producto.Id + "' no existe en los registros"
+					mesage = "El producto '" + producto.Id_Producto + "' no existe en los registros"
 				};
 			}
 
@@ -235,7 +227,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				mesage = "Producto modificado",
-				result = producto
+				result = GetProducto(producto.Id_Producto)
 			};
 		}
 

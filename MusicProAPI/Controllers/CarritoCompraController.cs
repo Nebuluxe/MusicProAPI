@@ -47,9 +47,9 @@ namespace MusicProAPI.Controllers
 
 					if (carrito.Id == Convert.ToInt32(splitArrDet[0]))
 					{
-						detalle.Id_carrito = Convert.ToInt32(splitArrDet[0]);
-						detalle.Id_producto = Convert.ToInt32(splitArrDet[1]);
-						detalle.cantidad = Convert.ToInt32(splitArrDet[2]);
+						detalle.Id_Carrito = Convert.ToInt32(splitArrDet[0]);
+						detalle.Id_Producto = Convert.ToInt32(splitArrDet[1]);
+						detalle.Pantidad = Convert.ToInt32(splitArrDet[2]);
 
 						ListDetalle.Add(detalle);
 					}
@@ -99,9 +99,9 @@ namespace MusicProAPI.Controllers
 
 						if (carrito.Id == Convert.ToInt32(splitArrDet[0]))
 						{
-							detalle.Id_carrito = Convert.ToInt32(splitArrDet[0]);
-							detalle.Id_producto = Convert.ToInt32(splitArrDet[1]);
-							detalle.cantidad = Convert.ToInt32(splitArrDet[2]);
+							detalle.Id_Carrito = Convert.ToInt32(splitArrDet[0]);
+							detalle.Id_Producto = Convert.ToInt32(splitArrDet[1]);
+							detalle.Pantidad = Convert.ToInt32(splitArrDet[2]);
 
 							ListDetalle.Add(detalle);
 						}
@@ -126,152 +126,6 @@ namespace MusicProAPI.Controllers
 		}
 
 		[HttpPost]
-		[Route("CrearCarrito")]
-		public dynamic CrearCarrito(CarritoCompra carrito)
-		{
-			string[] listUsuarios = metods.getContentFile("Usuarios");
-
-			bool prodEncontrada = false;
-
-			for (int i = 0; i < listUsuarios.Count(); i++)
-			{
-				string[] splitArr = listUsuarios[i].Split("||");
-
-				if (Convert.ToInt32(splitArr[0]) == carrito.Id_usuario)
-				{
-					prodEncontrada = true;
-				}
-			}
-
-			if (!prodEncontrada)
-			{
-				return new
-				{
-					message = "El usuario '" + carrito.Id_usuario + "' no existe en los registros",
-				};
-			}
-
-			string[] list = metods.getContentFile("CarritoCompras");
-
-			bool carritouserExiste = false;
-
-			for (int i = 0; i < list.Count(); i++)
-			{
-				string[] splitArr = list[i].Split("||");
-
-				if (Convert.ToInt32(splitArr[1]) == carrito.Id_usuario)
-				{
-					carritouserExiste = true;
-					break;
-				}
-			}
-
-			if (carritouserExiste)
-			{
-				return new
-				{
-					message = "El usuario '" + carrito.Id_usuario + "' ya tiene un carrito creado",
-				};
-			}
-
-			if (carrito.DetalleCarrito.Count() == 0)
-			{
-				return new
-				{
-					message = "Para crear un carrito debe existir almenos 1 producto agregado",
-				};
-			}
-
-			if (list.Count() == 1)
-			{
-				string[] splitArr = list[0].Split("||");
-				carrito.Id = Convert.ToInt32(splitArr[0]) + 1;
-			}
-			else
-			{
-				carrito.Id = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
-			}
-
-			string[] listProductos = metods.getContentFile("Productos");
-			string[] listStock = metods.getContentFile("Stock");
-
-			foreach (var item in carrito.DetalleCarrito)
-			{
-				bool prodencontrado = false;
-
-				for (int x = 0; x < listProductos.Count(); x++)
-				{
-					string[] splitAtt = listProductos[x].Split("||");
-
-					if (Convert.ToInt32(splitAtt[0]) == item.Id_producto)
-					{
-						prodencontrado = true;
-					}
-				}
-
-				if (!prodencontrado)
-				{
-					return new
-					{
-						mesage = "El producto '" + item.Id_producto + "' no existe en los registros"
-					};
-				}
-
-				if (item.cantidad <= 0)
-				{
-					return new
-					{
-						message = "La cantidad no puede ser igual o menor a 0",
-					};
-				}
-
-				bool encontradoEncontrado = false;
-
-				for (int x = 0; x < listStock.Count(); x++)
-				{
-					string[] splitAtt = listStock[x].Split("||");
-
-					if (Convert.ToInt32(splitAtt[0]) == item.Id_producto)
-					{
-						if (Convert.ToInt32(splitAtt[1]) == 0)
-						{
-							return new
-							{
-								message = "El producto '" + item.Id_producto + "' no tiene stock",
-							};
-						}
-						else if (Convert.ToInt32(splitAtt[1]) < item.cantidad)
-						{
-							return new
-							{
-								message = "La cantidad no puede ser mayor a la cantidad de stock del producto '" + item.Id_producto + "'",
-							};
-						}
-
-						encontradoEncontrado = true;
-					}
-				}
-
-				if (!encontradoEncontrado)
-				{
-					return new
-					{
-						message = "El producto '" + item.Id_producto + "' no tiene stock",
-					};
-				}
-
-				metods.saveLineFile("CarritoCompras", String.Format("{0}||{1}", carrito.Id, carrito.Id_usuario));
-				metods.saveLineFile("DetalleCarritoCompras", String.Format("{0}||{1}||{2}", carrito.Id, item.Id_producto, item.cantidad));
-			}
-
-			return new
-			{
-				message = "Carrito registrado",
-				result = carrito
-			};
-		}
-
-		[HttpPut]
 		[Route("AñadirProductoCarrito")]
 		public dynamic AñadirProductoCarrito(int id_usuario, int id_producto, int cantidad)
 		{
@@ -326,10 +180,23 @@ namespace MusicProAPI.Controllers
 
 			if (!carritouserExiste)
 			{
-				return new
+				CarritoCompra carrito = new CarritoCompra();
+				
+				carrito.Id_usuario = id_usuario;	
+
+				if (list.Count() == 1)
 				{
-					message = "El usuario '" + id_usuario + "' no tiene un carrito creado",
-				};
+					string[] splitArr = list[0].Split("||");
+					carrito.Id = Convert.ToInt32(splitArr[0]) + 1;
+				}
+				else
+				{
+					carrito.Id = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
+				}
+
+				metods.saveLineFile("CarritoCompras", String.Format("{0}||{1}", carrito.Id, carrito.Id_usuario));
+
+				idCarrito = carrito.Id;
 			}
 
 			string[] listProductos = metods.getContentFile("Productos");
@@ -435,7 +302,7 @@ namespace MusicProAPI.Controllers
 			};
 		}
 
-		[HttpPut]
+		[HttpPost]
 		[Route("QuitarProductoCarrito")]
 		public dynamic QuitarProductoCarrito(int id_usuario, int id_producto)
 		{
@@ -492,7 +359,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					message = "El usuario '" + id_usuario + "' no tiene un carrito creado",
+					message = "El usuario '" + id_usuario + "' no tiene productos añadidos en el carrito",
 				};
 			}
 
@@ -522,6 +389,7 @@ namespace MusicProAPI.Controllers
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
+			int cantLiCarrito = 0;
 
 			for (int i = 0; i < listDetCarritos.Count(); i++)
 			{
@@ -529,8 +397,14 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == idCarrito && Convert.ToInt32(splitArr[1]) == id_producto)
 				{
+					cantLiCarrito++;
 					encontrado = true;
 					continue;
+				}
+
+				if (Convert.ToInt32(splitArr[0]) == idCarrito)
+				{
+					cantLiCarrito++;
 				}
 
 				content.Add(listDetCarritos[i]);
@@ -541,6 +415,32 @@ namespace MusicProAPI.Controllers
 				return new
 				{
 					mesage = "El producto '" + id_producto + "' no existe en el carrito de compras del usuario '" + id_usuario + "'"
+				};
+			}
+
+			if (cantLiCarrito == 1)
+			{
+				string[] listaCarros = metods.getContentFile("CarritoCompras");
+
+				List<string> lines = new List<string>();
+
+				for (int i = 0; i < listCarrito.Count(); i++)
+				{
+					string[] splitArr = listCarrito[i].Split("||");
+
+					if (Convert.ToInt32(splitArr[1]) == id_usuario)
+					{
+						continue;
+					}
+
+					lines.Add(listCarrito[i]);
+				}
+
+				metods.updateLineFile("CarritoCompras", lines);
+
+				return new
+				{
+					mesage = "Producto quitado del carrito"
 				};
 			}
 
