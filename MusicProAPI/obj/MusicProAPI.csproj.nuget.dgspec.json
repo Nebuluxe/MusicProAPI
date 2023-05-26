@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ASUS TUF F15\\Desktop\\Api Musi Pro( Integracion de plataformas)\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj": {}
+    "C:\\Users\\Cetecom\\Desktop\\GItReposittoru\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ASUS TUF F15\\Desktop\\Api Musi Pro( Integracion de plataformas)\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj": {
+    "C:\\Users\\Cetecom\\Desktop\\GItReposittoru\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ASUS TUF F15\\Desktop\\Api Musi Pro( Integracion de plataformas)\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Cetecom\\Desktop\\GItReposittoru\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj",
         "projectName": "MusicProAPI",
-        "projectPath": "C:\\Users\\ASUS TUF F15\\Desktop\\Api Musi Pro( Integracion de plataformas)\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj",
-        "packagesPath": "C:\\Users\\ASUS TUF F15\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ASUS TUF F15\\Desktop\\Api Musi Pro( Integracion de plataformas)\\MusicProAPI\\MusicProAPI\\obj\\",
+        "projectPath": "C:\\Users\\Cetecom\\Desktop\\GItReposittoru\\MusicProAPI\\MusicProAPI\\MusicProAPI.csproj",
+        "packagesPath": "C:\\Users\\Cetecom\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Cetecom\\Desktop\\GItReposittoru\\MusicProAPI\\MusicProAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ASUS TUF F15\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Cetecom\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,48 +39,17 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "dependencies": {
-            "Oracle.ManagedDataAccess.Core": {
-              "target": "Package",
-              "version": "[3.21.100, )"
-            },
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[6.2.3, )"
-            },
-            "System.IO": {
-              "target": "Package",
-              "version": "[4.3.0, )"
-            },
-            "System.IO.FileSystem": {
-              "target": "Package",
-              "version": "[4.3.0, )"
-            },
-            "System.Linq": {
-              "target": "Package",
-              "version": "[4.3.0, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.411\\RuntimeIdentifierGraph.json"
         }
       }
     }
