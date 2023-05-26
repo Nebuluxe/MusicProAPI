@@ -180,8 +180,7 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Categoria modificada",
-				result = GetCategoria(categoria.Id_Categoria)
+				mesage = "Categoria modificada"
 			};
 		}
 

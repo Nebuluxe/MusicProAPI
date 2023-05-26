@@ -2,8 +2,8 @@
 {
 	public class CategoriaProducto
 	{
-		public int Id_Categoria { get; set; }
-		public string Nombre { get; set; }
-		public string Descripcion { get; set; }
+		public int Id_Categoria { get; set; } = 0;	
+		public string Nombre { get; set; } = string.Empty;
+		public string Descripcion { get; set; } = string.Empty;
 	}
 }

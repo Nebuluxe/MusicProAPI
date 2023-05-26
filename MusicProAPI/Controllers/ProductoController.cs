@@ -100,9 +100,25 @@ namespace MusicProAPI.Controllers
 
 		[HttpPost]
 		[Route("CrearProducto")]
-		public dynamic CrearProducto(Producto producto)
+		public dynamic CrearProducto(string nombre, string descripcion, string serieProducto, string marca, int categoriaId, int precio)
 		{
-			if (string.IsNullOrEmpty(producto.Nombre) || string.IsNullOrEmpty(producto.Descripcion) || string.IsNullOrEmpty(producto.SerieProducto) || string.IsNullOrEmpty(producto.Marca) || string.IsNullOrEmpty(producto.Marca))
+            Producto producto = new Producto();
+			producto.Nombre = nombre;
+			producto.Descripcion = descripcion;
+			producto.SerieProducto = serieProducto;
+			producto.Marca = marca;
+			producto.Categoria_id = categoriaId;
+			producto.Precio = precio;
+
+			if (precio == 0)
+			{
+                return new
+                {
+                    message = "El precio no puede ser '0'",
+                };
+            }
+
+            if (string.IsNullOrEmpty(producto.Nombre) || string.IsNullOrEmpty(producto.Descripcion) || string.IsNullOrEmpty(producto.SerieProducto) || string.IsNullOrEmpty(producto.Marca) || string.IsNullOrEmpty(producto.Marca))
 			{
 				return new
 				{
@@ -160,7 +176,7 @@ namespace MusicProAPI.Controllers
 		[Route("ModificarProducto")]
 		public dynamic ModificarProducto(Producto producto)
 		{
-			string[] listCategorias = metods.getContentFile("CategoriaProductos");
+            string[] listCategorias = metods.getContentFile("CategoriaProductos");
 			bool catEncontrada = false;
 
 			for (int i = 0; i < listCategorias.Count(); i++)
@@ -200,8 +216,8 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == producto.Id_Producto)
 				{
-					producto.Id_Producto = Convert.ToInt32(splitArr[0]);
-					producto.FechaCreacion = splitArr[6];
+					producto.Id_Producto = producto.Id_Producto;
+					producto.FechaCreacion = splitArr[7];
 					producto.FechaModificacion = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
 
 					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id_Producto, string.IsNullOrEmpty(producto.Nombre) ? splitArr[1] : producto.Nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.Descripcion) ? splitArr[2] : producto.Descripcion.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.SerieProducto) ? splitArr[3] : producto.SerieProducto.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.Marca) ? splitArr[4] : producto.Marca.Trim().Replace("|", ""), producto.Categoria_id == 0 ? splitArr[5] : producto.Categoria_id, producto.Precio == 0 ? splitArr[6] : producto.Precio, producto.FechaCreacion.Trim().Replace("|", ""), producto.FechaModificacion.Trim().Replace("|", ""), producto.Estado));
@@ -226,8 +242,7 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Producto modificado",
-				result = GetProducto(producto.Id_Producto)
+				mesage = "Producto modificado"
 			};
 		}
 

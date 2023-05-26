@@ -150,7 +150,7 @@ namespace MusicProAPI.Controllers
 			};
 		}
 
-		[HttpPut]
+		[HttpPost]
 		[Route("AumentarcarStock")]
 		public dynamic AumentarcarStock(int id_producto, int cantidad)
 		{
@@ -204,11 +204,11 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_producto)
 				{
-					content.Add(String.Format("{0}||{1}", id_producto, cantidad + Convert.ToInt32(splitArr[i])));
+					content.Add(String.Format("{0}||{1}", id_producto, cantidad + Convert.ToInt32(splitArr[1])));
 					encontrado = true;
 
 					stock.Id_Producto = id_producto;
-					stock.CantidadStock = cantidad + Convert.ToInt32(splitArr[i]);
+					stock.CantidadStock = cantidad + Convert.ToInt32(splitArr[1]);
 
 					continue;
 				}
@@ -233,7 +233,7 @@ namespace MusicProAPI.Controllers
 			};
 		}
 
-		[HttpPut]
+		[HttpPost]
 		[Route("RebajarStock")]
 		public dynamic RebajarStock(int id_producto, int cantidad)
 		{
