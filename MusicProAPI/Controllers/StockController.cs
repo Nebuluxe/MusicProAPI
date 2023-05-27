@@ -92,6 +92,7 @@ namespace MusicProAPI.Controllers
 		{
 			string[] listProductos = metods.getContentFile("Productos");
 			bool prodEncontrada = false;
+			string nombreProducto = "";
 
 			for (int i = 0; i < listProductos.Count(); i++)
 			{
@@ -99,6 +100,7 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_producto)
 				{
+					nombreProducto = splitArr[1];
 					prodEncontrada = true;
 				}
 			}
@@ -152,13 +154,13 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				message = "Se ha creado stock para el producto " + id_producto + ", stock: " + cantidad
+				message = "Se ha creado stock para el producto " + nombreProducto + ", stock: " + cantidad
 			};
 		}
 
 		[HttpPost]
-		[Route("AumentarcarStock")]
-		public dynamic AumentarcarStock(int id_producto, int cantidad)
+		[Route("AumentarStock")]
+		public dynamic AumentarStock(int id_producto, int cantidad)
 		{
 			string[] list = metods.getContentFile("Stock");
 
@@ -262,6 +264,7 @@ namespace MusicProAPI.Controllers
 
 			string[] listProductos = metods.getContentFile("Productos");
 			bool prodEncontrada = false;
+			string nombreProd = "";
 
 			for (int i = 0; i < listProductos.Count(); i++)
 			{
@@ -269,6 +272,7 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_producto)
 				{
+					nombreProd = splitArr[1];
 					prodEncontrada = true;
 				}
 			}
@@ -295,7 +299,6 @@ namespace MusicProAPI.Controllers
 			Stock stock = new Stock();
 
 			bool encontrado = false;
-			string nombreProd = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -315,8 +318,6 @@ namespace MusicProAPI.Controllers
 
 					stock.Id_Producto = id_producto;
 					stock.CantidadStock = Convert.ToInt32(splitArr[1]) - cantidad;
-
-					nombreProd = splitArr[1];
 
 					content.Add(String.Format("{0}||{1}", stock.Id_Producto, stock.CantidadStock));
 					encontrado = true;
@@ -359,6 +360,30 @@ namespace MusicProAPI.Controllers
 				};
 			}
 
+			string[] listProductos = metods.getContentFile("Productos");
+			bool prodEncontrada = false;
+			string nombreProd = "";
+
+			for (int i = 0; i < listProductos.Count(); i++)
+			{
+				string[] splitArr = listProductos[i].Split("||");
+
+				if (Convert.ToInt32(splitArr[0]) == id_producto)
+				{
+					nombreProd = splitArr[1];
+					prodEncontrada = true;
+				}
+			}
+
+			if (!prodEncontrada)
+			{
+				return new
+				{
+					resultTransaccion = false,
+					message = "El producto '" + id_producto + "' no existe en los registros",
+				};
+			}
+
 			bool encontrado = false;
 			List<string> content = new List<string>();
 
@@ -371,7 +396,7 @@ namespace MusicProAPI.Controllers
 					content.Add(list[i]);
 				}
 				else
-				{
+				{ 
 					encontrado = true;
 				}
 			}
@@ -381,7 +406,7 @@ namespace MusicProAPI.Controllers
 				return new
 				{
 					resultTransaccion = false,
-					message = "No hay registros de stock para el producto '" + id_producto + "'"
+					message = "No hay registros de stock para el producto '" + nombreProd + "'"
 				};
 			}
 
@@ -390,7 +415,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				message = "La categoria '" + id_producto + "' fue eliminado exitosamente"
+				message = "El stock del producto " + nombreProd + " fue eliminado exitosamente"
 			};
 		}
 	}

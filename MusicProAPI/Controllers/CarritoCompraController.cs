@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace MusicProAPI.Controllers
 {
 	[ApiController]
-	[Route("CompraController")]
+	[Route("CarritoCompra")]
 
 	public class CarritoCompraController
 	{
@@ -736,6 +736,32 @@ namespace MusicProAPI.Controllers
 				};
 			}
 
+			string[] listUsuarios = metods.getContentFile("Usuarios");
+
+			bool userEncontrado = false;
+
+			string nombreUSaurio = "";
+
+			for (int i = 0; i < listUsuarios.Count(); i++)
+			{
+				string[] splitArr = listUsuarios[i].Split("||");
+
+				if (Convert.ToInt32(splitArr[0]) == id_usuario)
+				{
+					nombreUSaurio = splitArr[1] + " " + splitArr[2];
+					userEncontrado = true;
+				}
+			}
+
+			if (!userEncontrado)
+			{
+				return new
+				{
+					resultTransaccion = false,
+					message = "El usuario '" + id_usuario + "' no existe en los registros",
+				};
+			}
+
 			string[] listCarrito = metods.getContentFile("CarritoCompras");
 
 			bool carritouserExiste = false;
@@ -790,7 +816,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				message = "El carrito del usaurio '" + id_usuario + "' fue eliminado exitosamente"
+				message = "El carrito del usaurio " + nombreUSaurio + " fue eliminado exitosamente"
 			};
 		}
 	}

@@ -90,9 +90,9 @@ namespace MusicProAPI.Controllers
 
 		[HttpPost]
 		[Route("CrearCategoria")]
-		public dynamic CrearProducto(string nombre, string descripcion)
+		public dynamic CrearProducto(CategoriaProducto categoria)
 		{
-			if (string.IsNullOrEmpty(descripcion) || string.IsNullOrEmpty(nombre))
+			if (string.IsNullOrEmpty(categoria.Nombre) && string.IsNullOrEmpty(categoria.Descripcion))
 			{
 				return new
 				{
@@ -115,33 +115,21 @@ namespace MusicProAPI.Controllers
 				categoriaID = list.Count() != 0 ? (Convert.ToInt32(list[list.Count() - 1].Split("||")[0])) + 1 : 1;
 			}
 
-			CategoriaProducto categoria = new CategoriaProducto();
 			categoria.Id_Categoria = categoriaID;
-			categoria.Nombre = nombre;
-			categoria.Descripcion = descripcion;
 
 			metods.saveLineFile("CategoriaProductos", String.Format("{0}||{1}||{2}", categoria.Id_Categoria, categoria.Nombre.Trim().Replace("|",""), categoria.Descripcion.Trim().Replace("|", "")));
 
 			return new
 			{
 				resultTransaccion = true,
-				message = "La categoria " + nombre + " registrado"
+				message = "La categoria " + categoria.Nombre + " fue resgistrada exitosamente"
 			};
 		}
 
 		[HttpPut]
 		[Route("ModificarCategoria")]
-		public dynamic ModificarProducto(int id_categoria, string nombre, string descripcion)
+		public dynamic ModificarProducto(CategoriaProducto categoria)
 		{
-			if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(descripcion))
-			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "Faltan datos para almacenar la categoria",
-				};
-			}
-
 			string[] list = metods.getContentFile("CategoriaProductos");
 
 			if (list.Count() == 0)
@@ -155,16 +143,19 @@ namespace MusicProAPI.Controllers
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
-			CategoriaProducto categoria = new CategoriaProducto();
+
+			string nombreCategoria = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
 				string[] splitArr = list[i].Split("||");
 
-				if (Convert.ToInt32(splitArr[0]) == id_categoria)
+				if (Convert.ToInt32(splitArr[0]) == categoria.Id_Categoria)
 				{
 
-					content.Add(String.Format("{0}||{1}||{2}", id_categoria, string.IsNullOrEmpty(nombre) ? splitArr[1] : nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(descripcion) ? splitArr[2] : descripcion.Trim().Replace("|", "")));
+					nombreCategoria = string.IsNullOrEmpty(categoria.Nombre) ? splitArr[1] : categoria.Nombre.Trim().Replace("|", "");
+
+					content.Add(String.Format("{0}||{1}||{2}", categoria.Id_Categoria, string.IsNullOrEmpty(categoria.Nombre) ? splitArr[1] : categoria.Nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(categoria.Descripcion) ? splitArr[2] : categoria.Descripcion.Trim().Replace("|", "")));
 
 					encontrado = true;
 
@@ -179,7 +170,7 @@ namespace MusicProAPI.Controllers
 				return new
 				{
 					resultTransaccion = false,
-					message = "La categoria '" + id_categoria + "' no existe en los registros"
+					message = "La categoria '" + nombreCategoria + "' no existe en los registros"
 				};
 			}
 
@@ -188,7 +179,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				mesage = "Categoria modificada"
+				mesage = "La categoria " + nombreCategoria + " fue modificada exitosamente"
 			};
 		}
 
@@ -209,6 +200,7 @@ namespace MusicProAPI.Controllers
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
+			string nombreCategoria = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -220,6 +212,7 @@ namespace MusicProAPI.Controllers
 				}
 				else
 				{
+					nombreCategoria = splitArr[1];
 					encontrado = true;
 				}
 			}
@@ -238,7 +231,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				message = "La categoria '" + id_categoria + "' fue eliminado exitosamente"
+				message = "La categoria " + nombreCategoria + " fue eliminada exitosamente"
 			};
 		}
 	}

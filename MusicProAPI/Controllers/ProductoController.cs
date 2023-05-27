@@ -4,7 +4,7 @@ using MusicProAPI.Modelos;
 namespace MusicProAPI.Controllers
 {
 	[ApiController]
-	[Route("productos")]
+	[Route("Producto")]
 	public class ProductoController
 	{
 		GlobalMetods metods = new GlobalMetods();
@@ -103,17 +103,9 @@ namespace MusicProAPI.Controllers
 
 		[HttpPost]
 		[Route("CrearProducto")]
-		public dynamic CrearProducto(string nombre, string descripcion, string serieProducto, string marca, int categoriaId, int precio)
+		public dynamic CrearProducto(Producto producto)
 		{
-            Producto producto = new Producto();
-			producto.Nombre = nombre;
-			producto.Descripcion = descripcion;
-			producto.SerieProducto = serieProducto;
-			producto.Marca = marca;
-			producto.Categoria_id = categoriaId;
-			producto.Precio = precio;
-
-			if (precio == 0)
+			if (producto.Precio == 0)
 			{
                 return new
                 {
@@ -144,12 +136,12 @@ namespace MusicProAPI.Controllers
 				}
 			}
 
-			if (!catEncontrada)
+			if (catEncontrada)
 			{
 				return new
 				{
 					resultTransaccion = false,
-					message = "La categoria '" + producto.Id_Producto + "' no existe en los registros",
+					message = "El producto '" + producto.Id_Producto + "' existe en los registros",
 				};
 			}
 
@@ -174,7 +166,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				message = "El producto " + nombre + " fue registrado exitosamente"
+				message = "El producto " + producto.Nombre + " fue registrado exitosamente"
 			};
 		}
 
@@ -277,6 +269,7 @@ namespace MusicProAPI.Controllers
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
+			string nomnreProducto = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -288,6 +281,7 @@ namespace MusicProAPI.Controllers
 				}
 				else
 				{
+					nomnreProducto = splitArr[1];
 					encontrado = true;
 				}
 			}
@@ -306,7 +300,7 @@ namespace MusicProAPI.Controllers
 			return new
 			{
 				resultTransaccion = true,
-				message = "El usaurio '" + id_producto + "' fue eliminado exitosamente"
+				message = "El usaurio '" + nomnreProducto + "' fue eliminado exitosamente"
 			};
 		}
 	}
