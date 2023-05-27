@@ -20,7 +20,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay usuarios registrados"
+					resultTransaccion = false,
+					message = "No hay usuarios registrados"
 				};
 			}
 
@@ -53,7 +54,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay usuarios registrados"
+					resultTransaccion = false,
+					message = "No hay usuarios registrados"
 				};
 			}
 
@@ -81,7 +83,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + id_usuario + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El usaurio '" + id_usuario + "' no existe en los registros"
 				};
 			}
 
@@ -96,6 +99,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "Faltan datos para almacenar el usaurio",
 				};
 			}
@@ -118,7 +122,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "Formato de correo incorrecto"
+					resultTransaccion = false,
+					message = "Formato de correo incorrecto"
 				};
 			}
 
@@ -130,7 +135,8 @@ namespace MusicProAPI.Controllers
 				{
 					return new
 					{
-						mesage = "El corre ingresado ya existe en los registros"
+						resultTransaccion = false,
+						message = "El corre ingresado ya existe en los registros"
 					};
 				}
 			}
@@ -139,8 +145,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				message = "Usuario registrado",
-				result = usuario
+				resultTransaccion = true,
+				message = "El usuario " + usuario.Nombre + " " + usuario.Apellido + " fue registrado correcctamente"
 			};
 		}
 
@@ -154,7 +160,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay usuarios registrados"
+					resultTransaccion = false,
+					message = "No hay usuarios registrados"
 				};
 			}
 
@@ -166,13 +173,17 @@ namespace MusicProAPI.Controllers
 				{
 					return new
 					{
-						mesage = "Formato de correo incorrecto"
+						resultTransaccion = false,
+						message = "Formato de correo incorrecto"
 					};
 				}
 			}
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
+
+			string nombre = "";
+			string apellido = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -181,6 +192,9 @@ namespace MusicProAPI.Controllers
 				if (Convert.ToInt32(splitArr[0]) == usuario.Id_Usuario)
 				{
 					usuario.Id_Usuario = Convert.ToInt32(splitArr[0]);
+
+					nombre = splitArr[1];
+					apellido = splitArr[2];
 
 					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id_Usuario, string.IsNullOrEmpty(usuario.Nombre) ? splitArr[1] : usuario.Nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(usuario.Apellido) ? splitArr[2] : usuario.Apellido.Trim().Replace("|", ""), string.IsNullOrEmpty(usuario.Correo) ? splitArr[3] : usuario.Correo.Trim().Replace("|", ""), string.IsNullOrEmpty(usuario.Password) ? splitArr[4] : usuario.Password.Trim().Replace("|", "")));
 					encontrado = true;
@@ -194,7 +208,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + usuario.Id_Usuario + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El usaurio '" + usuario.Id_Usuario + "' no existe en los registros"
 				};
 			}
 
@@ -202,8 +217,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Usuario modificado",
-				result = GetUsuario(usuario.Id_Usuario)
+				resultTransaccion = true,
+				message = "El usuario " + nombre + " " + apellido + " fue modificcado correcctamente"
 			};
 		}
 
@@ -217,12 +232,16 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay usuarios registrados"
+					resultTransaccion = false,
+					message = "No hay usuarios registrados"
 				};
 			}
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
+
+			string nombre = "";
+			string apellido = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -234,6 +253,9 @@ namespace MusicProAPI.Controllers
 				}
 				else
 				{
+
+					nombre = splitArr[1];
+					apellido = splitArr[2];
 					encontrado = true;
 				}
 			}
@@ -242,7 +264,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + id_usuario + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El usaurio '" + id_usuario + "' no existe en los registros"
 				};
 			}
 
@@ -250,7 +273,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "El usaurio '" + id_usuario + "' fue eliminado exitosamente"
+				resultTransaccion = true,
+				message = "El usuario " + nombre + " " + apellido + " fue eliminado correcctamente"
 			};
 		}
 	}

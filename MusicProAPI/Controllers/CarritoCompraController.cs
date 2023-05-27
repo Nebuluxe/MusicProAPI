@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Mvc;
 using MusicProAPI.Modelos;
 using System.Collections.Generic;
+using System.Security.Policy;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace MusicProAPI.Controllers
 {
@@ -22,7 +26,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay carritos registrados"
+					resultTransaccion = false,
+					message = "No hay carritos registrados"
 				};
 			}
 
@@ -73,7 +78,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay carritos registrados"
+					resultTransaccion = false,
+					message = "No hay carritos registrados"
 				};
 			}
 
@@ -118,7 +124,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + id_usuario + "' no tiene un carrito creado"
+					resultTransaccion = false,
+					message = "El usaurio '" + id_usuario + "' no tiene un carrito creado"
 				};
 			}
 
@@ -127,7 +134,7 @@ namespace MusicProAPI.Controllers
 
         [HttpPost]
         [Route("PagarCarrito")]
-        public dynamic PagarCarrito(int id_usuario)
+        public async Task<dynamic> PagarCarrito(int id_usuario, string Rut_Persona, string NumeroTarjeta, int Clavetarjeta, int Cvv, string NumeroCuenta,  string Moneda)
         {
             string[] list = metods.getContentFile("DetalleCarritoCompras");
 
@@ -135,11 +142,21 @@ namespace MusicProAPI.Controllers
             {
                 return new
                 {
-                    mesage = "No hay carritos registrados"
+					resultTransaccion = false,
+					message = "No hay carritos registrados"
                 };
             }
 
-            string[] listUsuarios = metods.getContentFile("Usuarios");
+			if (Moneda.ToLower() != "peso" && Moneda.ToLower() != "euro" && Moneda.ToLower() != "dolar" && Moneda.ToLower() != "uf")
+			{
+				return new
+				{
+					resultTransaccion = false,
+					message = "Formato de moneda incorrecto las moedas deben ser 'peso', 'euro', 'dolar' o 'uf' ",
+				};
+			}
+
+			string[] listUsuarios = metods.getContentFile("Usuarios");
 
             bool userEncontrado = false;
 
@@ -157,7 +174,8 @@ namespace MusicProAPI.Controllers
             {
                 return new
                 {
-                    message = "El usuario '" + id_usuario + "' no existe en los registros",
+					resultTransaccion = false,
+					message = "El usuario '" + id_usuario + "' no existe en los registros",
                 };
             }
 
@@ -188,7 +206,8 @@ namespace MusicProAPI.Controllers
             {
                 return new
                 {
-                    message = "El carrito '" + id_usuario + "' no existe",
+					resultTransaccion = false,
+					message = "El carrito '" + id_usuario + "' no existe",
                 };
             }
 
@@ -198,8 +217,9 @@ namespace MusicProAPI.Controllers
             string[] listDetCarritos = metods.getContentFile("DetalleCarritoCompras");
 
             List<Producto> productos = new List<Producto>();
+			List<Stock> productosCantidad = new List<Stock>();
 
-            List<string> contentDetalleCerrito = new List<string>();
+			List<string> contentDetalleCerrito = new List<string>();
 			List<string> contentStocks = new List<string>();
 
 			for (int i = 0; i < listDetCarritos.Count(); i++)
@@ -237,10 +257,12 @@ namespace MusicProAPI.Controllers
 
 								if (Convert.ToInt32(splitAttStock[0]) == producto.Id_Producto)
 								{
+
 									if (Convert.ToInt32(splitAttStock[1]) == 0)
 									{
 										return new
 										{
+											resultTransaccion = false,
 											message = "El producto '" + producto.Id_Producto + " - " +  producto.Nombre + "' no tiene stock",
 										};
 									}
@@ -249,9 +271,16 @@ namespace MusicProAPI.Controllers
 									{
                                         return new
                                         {
-                                            message = "El producto '" + producto.Id_Producto + " - " + producto.Nombre + "' no tiene stock suficiente para realizar la compra",
+											resultTransaccion = false,
+											message = "El producto '" + producto.Id_Producto + " - " + producto.Nombre + "' no tiene stock suficiente para realizar la compra",
                                         };
                                     }
+
+									Stock cantProd = new Stock();
+									cantProd.Id_Producto = Convert.ToInt32(splitAttStock[0]);
+									cantProd.CantidadStock = Convert.ToInt32(splitAttStock[1]);
+
+									productosCantidad.Add(cantProd);
 
 									int cantidadFinal = Convert.ToInt32(splitAttStock[1]) - Convert.ToInt32(splitArrDetCarr[2]);
 
@@ -265,7 +294,8 @@ namespace MusicProAPI.Controllers
 							{
                                 return new
                                 {
-                                    message = "El producto '" + producto.Id_Producto + "' no tiene stock",
+									resultTransaccion = false,
+									message = "El producto '" + producto.Id_Producto + "' no tiene stock",
                                 };
                             }
                         }
@@ -306,17 +336,57 @@ namespace MusicProAPI.Controllers
 
 			//efectuar el pago de los productos por FakeBankAPI_MSP
 
-            //eliminar carrito pagado
-            metods.updateLineFile("CarritoCompras", contentCarrito);
-            metods.updateLineFile("DetalleCarritoCompras", contentDetalleCerrito);
+			int TotalPago = 0;
 
-            //actualizar stock de productos
-            metods.updateLineFile("Stock", contentStocks);
+			foreach (var item in productos)
+			{
+				TotalPago = TotalPago + productosCantidad.Where(x => x.Id_Producto == item.Id_Producto).First().CantidadStock * item.Precio;
+			}
 
-            return new
-            {
-                mesage = "Mensaje al final de la transaccion undefined"
-            };
+			var httpClient = new HttpClient();
+
+			//endpint de pago FakeBank
+			string URL = "https://localhost:3000/PagoEnLinea/Pagar";
+
+			string apiUrl = $"{URL}?Rut_Persona={Uri.EscapeDataString(Rut_Persona)}&NumeroTarjeta={Uri.EscapeDataString(NumeroTarjeta)}&Clavetarjeta={Uri.EscapeDataString(Clavetarjeta.ToString())}&Cvv={Uri.EscapeDataString(Cvv.ToString())}&NumeroCuenta={Uri.EscapeDataString(NumeroCuenta)}&Monto={Uri.EscapeDataString(TotalPago.ToString())}&Moneda={Uri.EscapeDataString(Moneda)}";
+
+			HttpResponseMessage response = await httpClient.PostAsync(apiUrl,null);
+
+			string responseData = "";
+
+			if (response.IsSuccessStatusCode)
+			{
+				responseData = await response.Content.ReadAsStringAsync();
+			}
+			else
+			{
+				throw new Exception($"Error en la solicitud: {response.StatusCode}");
+			}
+
+			var deserializeResponse = JsonConvert.DeserializeObject<TransaccionResult>(responseData);
+
+			if (!deserializeResponse.resultTransaccion)
+			{
+				return new
+				{
+					messageError = deserializeResponse.message
+				};
+			}
+			else
+			{
+				//eliminar carrito pagado
+				metods.updateLineFile("CarritoCompras", contentCarrito);
+				metods.updateLineFile("DetalleCarritoCompras", contentDetalleCerrito);
+
+				//actualizar stock de productos
+				metods.updateLineFile("Stock", contentStocks);
+
+				return new
+				{
+					mesage = "Se ha el pago de los productos en el carrito por un total de " + TotalPago
+				};
+			}
+
         }
 
         [HttpPost]
@@ -341,6 +411,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El usuario '" + id_usuario + "' no existe en los registros",
 				};
 			}
@@ -402,7 +473,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El producto '" + id_producto + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El producto '" + id_producto + "' no existe en los registros"
 				};
 			}
 
@@ -410,6 +482,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "La cantidad no puede ser igual o menor a 0",
 				};
 			}
@@ -426,6 +499,7 @@ namespace MusicProAPI.Controllers
 					{
 						return new
 						{
+							resultTransaccion = false,
 							message = "El producto '" + id_producto + "' no tiene stock",
 						};
 					}
@@ -433,6 +507,7 @@ namespace MusicProAPI.Controllers
 					{
 						return new
 						{
+							resultTransaccion = false,
 							message = "La cantidad no puede ser mayor a la cantidad de stock del producto '" + id_producto + "'",
 						};
 					}
@@ -445,6 +520,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El producto '" + id_producto + "' no tiene stock",
 				};
 			}
@@ -483,7 +559,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Producto añadido al carrito"
+				resultTransaccion = true,
+				message = "Producto añadido al carrito"
 			};
 		}
 
@@ -497,7 +574,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay carritos registrados"
+					resultTransaccion = false,
+					message = "No hay carritos registrados"
 				};
 			}
 
@@ -519,6 +597,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El usuario '" + id_usuario + "' no existe en los registros",
 				};
 			}
@@ -544,6 +623,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El usuario '" + id_usuario + "' no tiene productos añadidos en el carrito",
 				};
 			}
@@ -566,7 +646,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El producto '" + id_producto + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El producto '" + id_producto + "' no existe en los registros"
 				};
 			}
 
@@ -599,7 +680,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El producto '" + id_producto + "' no existe en el carrito de compras del usuario '" + id_usuario + "'"
+					resultTransaccion = false,
+					message = "El producto '" + id_producto + "' no existe en el carrito de compras del usuario '" + id_usuario + "'"
 				};
 			}
 
@@ -625,7 +707,8 @@ namespace MusicProAPI.Controllers
 
 				return new
 				{
-					mesage = "Producto quitado del carrito"
+					resultTransaccion = false,
+					message = "Producto quitado del carrito"
 				};
 			}
 
@@ -633,7 +716,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Producto quitado del carrito"
+				resultTransaccion = true,
+				message = "Producto quitado del carrito"
 			};
 		}
 
@@ -647,7 +731,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay carritos registrados"
+					resultTransaccion = false,
+					message = "No hay carritos registrados"
 				};
 			}
 
@@ -675,6 +760,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El usuario '" + id_usuario + "' no tiene un carrito creado",
 				};
 			}
@@ -703,7 +789,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "El carrito del usaurio '" + id_usuario + "' fue eliminado exitosamente"
+				resultTransaccion = true,
+				message = "El carrito del usaurio '" + id_usuario + "' fue eliminado exitosamente"
 			};
 		}
 	}

@@ -102,3 +102,4 @@ C:\Users\svega\OneDrive\Escritorio\Proyectos Joaquin Diaz\MusicProAPI\MusicProAP
 C:\Users\svega\OneDrive\Escritorio\Proyectos Joaquin Diaz\MusicProAPI\MusicProAPI\obj\Debug\net6.0\MusicProAPI.pdb
 C:\Users\svega\OneDrive\Escritorio\Proyectos Joaquin Diaz\MusicProAPI\MusicProAPI\obj\Debug\net6.0\MusicProAPI.genruntimeconfig.cache
 C:\Users\svega\OneDrive\Escritorio\Proyectos Joaquin Diaz\MusicProAPI\MusicProAPI\obj\Debug\net6.0\ref\MusicProAPI.dll
+C:\Users\ASUS TUF F15\Desktop\Api Musi Pro( Integracion de plataformas)\MusicProAPI\MusicProAPI\bin\Debug\net6.0\Newtonsoft.Json.dll

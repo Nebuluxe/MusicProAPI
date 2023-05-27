@@ -20,7 +20,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay categorias registradas"
+					resultTransaccion = false,
+					message = "No hay categorias registradas"
 				};
 			}
 
@@ -51,7 +52,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay categorias registradas"
+					resultTransaccion = false,
+					message = "No hay categorias registradas"
 				};
 			}
 
@@ -78,7 +80,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "La categoria '" + id_categoria + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "La categoria '" + id_categoria + "' no existe en los registros"
 				};
 			}
 
@@ -93,6 +96,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "Faltan datos para almacenar la categoria",
 				};
 			}
@@ -120,8 +124,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				message = "Categoria registrado",
-				result = categoria
+				resultTransaccion = true,
+				message = "La categoria " + nombre + " registrado"
 			};
 		}
 
@@ -133,6 +137,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "Faltan datos para almacenar la categoria",
 				};
 			}
@@ -143,7 +148,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay categorias registradas"
+					resultTransaccion = false,
+					message = "No hay categorias registradas"
 				};
 			}
 
@@ -172,7 +178,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "La categoria '" + id_categoria + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "La categoria '" + id_categoria + "' no existe en los registros"
 				};
 			}
 
@@ -180,6 +187,7 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
+				resultTransaccion = true,
 				mesage = "Categoria modificada"
 			};
 		}
@@ -194,7 +202,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay categorias registrados"
+					resultTransaccion = false,
+					message = "No hay categorias registrados"
 				};
 			}
 
@@ -219,7 +228,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "La categoria '" + id_categoria + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "La categoria '" + id_categoria + "' no existe en los registros"
 				};
 			}
 
@@ -227,7 +237,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "La categoria '" + id_categoria + "' fue eliminado exitosamente"
+				resultTransaccion = true,
+				message = "La categoria '" + id_categoria + "' fue eliminado exitosamente"
 			};
 		}
 	}

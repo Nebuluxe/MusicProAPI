@@ -19,7 +19,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay productos registrados"
+					resultTransaccion = false,
+					message = "No hay productos registrados"
 				};
 			}
 
@@ -57,7 +58,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay productos registrados"
+					resultTransaccion = false,
+					message = "No hay productos registrados"
 				};
 			}
 
@@ -91,7 +93,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El producto '" + id_producto + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El producto '" + id_producto + "' no existe en los registros"
 				};
 			}
 
@@ -114,7 +117,8 @@ namespace MusicProAPI.Controllers
 			{
                 return new
                 {
-                    message = "El precio no puede ser '0'",
+					resultTransaccion = false,
+					message = "El precio no puede ser '0'",
                 };
             }
 
@@ -122,6 +126,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "Faltan datos para almacenar el producto",
 				};
 			}
@@ -143,6 +148,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "La categoria '" + producto.Id_Producto + "' no existe en los registros",
 				};
 			}
@@ -167,8 +173,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				message = "Producto registrado",
-				result = producto
+				resultTransaccion = true,
+				message = "El producto " + nombre + " fue registrado exitosamente"
 			};
 		}
 
@@ -193,6 +199,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "La categoria '" + producto.Id_Producto + "' no existe en los registros",
 				};
 			}
@@ -203,12 +210,15 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					mesage = "No hay productos registrados"
 				};
 			}
 
 			bool encontrado = false;
 			List<string> content = new List<string>();
+
+			string nombreProd = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -219,6 +229,8 @@ namespace MusicProAPI.Controllers
 					producto.Id_Producto = producto.Id_Producto;
 					producto.FechaCreacion = splitArr[7];
 					producto.FechaModificacion = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+
+					nombreProd = string.IsNullOrEmpty(producto.Nombre) ? splitArr[1] : producto.Nombre.Trim().Replace("|", "");
 
 					content.Add(String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id_Producto, string.IsNullOrEmpty(producto.Nombre) ? splitArr[1] : producto.Nombre.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.Descripcion) ? splitArr[2] : producto.Descripcion.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.SerieProducto) ? splitArr[3] : producto.SerieProducto.Trim().Replace("|", ""), string.IsNullOrEmpty(producto.Marca) ? splitArr[4] : producto.Marca.Trim().Replace("|", ""), producto.Categoria_id == 0 ? splitArr[5] : producto.Categoria_id, producto.Precio == 0 ? splitArr[6] : producto.Precio, producto.FechaCreacion.Trim().Replace("|", ""), producto.FechaModificacion.Trim().Replace("|", ""), producto.Estado));
 
@@ -234,7 +246,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El producto '" + producto.Id_Producto + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El producto '" + producto.Id_Producto + "' no existe en los registros"
 				};
 			}
 
@@ -242,7 +255,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Producto modificado"
+				resultTransaccion = true,
+				message = "El producto " + nombreProd + " fue modificado exitosamente"
 			};
 		}
 
@@ -256,7 +270,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay productos registrados"
+					resultTransaccion = false,
+					message = "No hay productos registrados"
 				};
 			}
 
@@ -281,7 +296,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "El usaurio '" + id_producto + "' no existe en los registros"
+					resultTransaccion = false,
+					message = "El usaurio '" + id_producto + "' no existe en los registros"
 				};
 			}
 
@@ -289,7 +305,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "El usaurio '" + id_producto + "' fue eliminado exitosamente"
+				resultTransaccion = true,
+				message = "El usaurio '" + id_producto + "' fue eliminado exitosamente"
 			};
 		}
 	}

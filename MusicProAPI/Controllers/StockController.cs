@@ -20,7 +20,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay ningun stock registrados"
+					resultTransaccion = false,
+					message = "No hay ningun stock registrados"
 				};
 			}
 
@@ -50,7 +51,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay ningun stock registrados"
+					resultTransaccion = false,
+					message = "No hay ningun stock registrados"
 				};
 			}
 
@@ -76,7 +78,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay registros de stock para el producto '" + id_producto + "'"
+					resultTransaccion = false,
+					message = "No hay registros de stock para el producto '" + id_producto + "'"
 				};
 			}
 
@@ -104,6 +107,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El producto '" + id_producto + "' no existe en los registros",
 				};
 			}
@@ -125,6 +129,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El producto '" + id_producto + "' ya tiene un stock en los registros",
 				};
 			}
@@ -133,6 +138,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "La cantidad de stock no puede ser igual o menor a 0",
 				};
 			}
@@ -145,8 +151,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				message = "Stock registrado",
-				result = stock
+				resultTransaccion = true,
+				message = "Se ha creado stock para el producto " + id_producto + ", stock: " + cantidad
 			};
 		}
 
@@ -160,12 +166,14 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay ningun stock registrados"
+					resultTransaccion = false,
+					message = "No hay ningun stock registrados"
 				};
 			}
 
 			string[] listProductos = metods.getContentFile("Productos");
 			bool prodEncontrada = false;
+			string nombreProd = "";
 
 			for (int i = 0; i < listProductos.Count(); i++)
 			{
@@ -173,6 +181,7 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_producto)
 				{
+					nombreProd = splitArr[1];
 					prodEncontrada = true;
 				}
 			}
@@ -181,6 +190,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El producto '" + id_producto + "' no existe en los registros",
 				};
 			}
@@ -189,6 +199,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "La cantidad de stock a aumentar no puede ser igual o menor a 0",
 				};
 			}
@@ -220,7 +231,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay registros de stock para el producto '" + stock.Id_Producto + "'"
+					resultTransaccion = false,
+					message = "No hay registros de stock para el producto '" + stock.Id_Producto + "'"
 				};
 			}
 
@@ -228,8 +240,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Stock aumentado",
-				result = stock
+				resultTransaccion = true,
+				message = "Se aumento el stock del producto " + nombreProd + ", stock: " + stock.CantidadStock
 			};
 		}
 
@@ -243,7 +255,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay ningun stock registrados"
+					resultTransaccion = false,
+					message = "No hay ningun stock registrados"
 				};
 			}
 
@@ -264,6 +277,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "El producto '" + id_producto + "' no existe en los registros",
 				};
 			}
@@ -272,6 +286,7 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
+					resultTransaccion = false,
 					message = "La cantidad de stock a rebajar no puede ser igual o menor a 0",
 				};
 			}
@@ -280,6 +295,7 @@ namespace MusicProAPI.Controllers
 			Stock stock = new Stock();
 
 			bool encontrado = false;
+			string nombreProd = "";
 
 			for (int i = 0; i < list.Count(); i++)
 			{
@@ -292,12 +308,15 @@ namespace MusicProAPI.Controllers
 					{
 						return new
 						{
+							resultTransaccion = false,
 							message = "La cantidad de stock a rebajar no puede ser mayor que la cantidad actual.",
 						};
 					}
 
 					stock.Id_Producto = id_producto;
 					stock.CantidadStock = Convert.ToInt32(splitArr[1]) - cantidad;
+
+					nombreProd = splitArr[1];
 
 					content.Add(String.Format("{0}||{1}", stock.Id_Producto, stock.CantidadStock));
 					encontrado = true;
@@ -311,7 +330,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay registros de stock para el producto '" + stock.Id_Producto + "'"
+					resultTransaccion = false,
+					message = "No hay registros de stock para el producto '" + stock.Id_Producto + "'"
 				};
 			}
 
@@ -319,8 +339,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "Stock rebajado",
-				result = stock
+				resultTransaccion = true,
+				message = "Se rebajo el stock del producto " + nombreProd + ", stock: " + stock.CantidadStock
 			};
 		}
 
@@ -334,7 +354,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay ningun stock registrados"
+					resultTransaccion = false,
+					message = "No hay ningun stock registrados"
 				};
 			}
 
@@ -359,7 +380,8 @@ namespace MusicProAPI.Controllers
 			{
 				return new
 				{
-					mesage = "No hay registros de stock para el producto '" + id_producto + "'"
+					resultTransaccion = false,
+					message = "No hay registros de stock para el producto '" + id_producto + "'"
 				};
 			}
 
@@ -367,7 +389,8 @@ namespace MusicProAPI.Controllers
 
 			return new
 			{
-				mesage = "La categoria '" + id_producto + "' fue eliminado exitosamente"
+				resultTransaccion = true,
+				message = "La categoria '" + id_producto + "' fue eliminado exitosamente"
 			};
 		}
 	}
