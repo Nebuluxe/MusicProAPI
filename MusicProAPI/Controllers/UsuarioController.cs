@@ -14,15 +14,16 @@ namespace MusicProAPI.Controllers
 		[Route("GetUsuarios")]
 		public dynamic GetUsuarios()
 		{
+			TransaccionResult result = new TransaccionResult();
+
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay usuarios registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay usuarios registrados";
+
+				return result;
 			}
 
 			List<Usuario> Usuarios = new List<Usuario>();
@@ -48,15 +49,16 @@ namespace MusicProAPI.Controllers
 		[Route("GetUsuario")]
 		public dynamic GetUsuario(int id_usuario)
 		{
+			TransaccionResult result = new TransaccionResult();
+
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay usuarios registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay usuarios registrados";
+
+				return result;
 			}
 
 			Usuario Usuario = new Usuario();
@@ -81,11 +83,10 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El usaurio '" + id_usuario + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "El usaurio '" + id_usuario + "' no existe en los registros";
+
+				return result;
 			}
 
 			return Usuario;
@@ -95,13 +96,14 @@ namespace MusicProAPI.Controllers
 		[Route("CrearUsuario")]
 		public dynamic CrearUsuario(Usuario usuario)
 		{
+			TransaccionResult result = new TransaccionResult();
+
 			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.Correo) || string.IsNullOrEmpty(usuario.Password))
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "Faltan datos para almacenar el usaurio",
-				};
+				result.resultTransaccion = false;
+				result.message = "Faltan datos para almacenar el usaurio";
+
+				return result;
 			}
 
 			string[] list = metods.getContentFile("Usuarios");
@@ -120,11 +122,10 @@ namespace MusicProAPI.Controllers
 
 			if (!Regex.IsMatch(usuario.Correo.Trim().Replace("|", ""), patron))
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "Formato de correo incorrecto"
-				};
+				result.resultTransaccion = false;
+				result.message = "Formato de correo incorrecto";
+
+				return result;
 			}
 
 			for (int i = 0; i < list.Count(); i++)
@@ -133,36 +134,35 @@ namespace MusicProAPI.Controllers
 
 				if (splitArr[3] == usuario.Correo)
 				{
-					return new
-					{
-						resultTransaccion = false,
-						message = "El corre ingresado ya existe en los registros"
-					};
+					result.resultTransaccion = false;
+					result.message = "El corre ingresado ya existe en los registros";
+
+					return result;
 				}
 			}
 
 			metods.saveLineFile("Usuarios", String.Format("{0}||{1}||{2}||{3}||{4}", usuario.Id_Usuario, usuario.Nombre.Trim().Replace("|", ""), usuario.Apellido.Trim().Replace("|", ""), usuario.Correo.Trim().Replace("|", ""), usuario.Password.Trim().Replace("|", "")));
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "El usuario " + usuario.Nombre + " " + usuario.Apellido + " fue registrado correcctamente"
-			};
+			result.resultTransaccion = true;
+			result.message = "El usuario " + usuario.Nombre + " " + usuario.Apellido + " fue registrado correcctamente";
+
+			return result;
 		}
 
 		[HttpPut]
 		[Route("ModificarUsuario")]
 		public dynamic ModificarUsuario(Usuario usuario)
 		{
+			TransaccionResult result = new TransaccionResult();
+
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay usuarios registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay usuarios registrados";
+
+				return result;
 			}
 
 			if (!string.IsNullOrEmpty(usuario.Correo))
@@ -171,11 +171,10 @@ namespace MusicProAPI.Controllers
 
 				if (!Regex.IsMatch(usuario.Correo.Trim().Replace("|", ""), patron))
 				{
-					return new
-					{
-						resultTransaccion = false,
-						message = "Formato de correo incorrecto"
-					};
+					result.resultTransaccion = false;
+					result.message = "Formato de correo incorrecto";
+
+					return result;
 				}
 			}
 
@@ -206,35 +205,34 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El usaurio '" + usuario.Id_Usuario + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "El usaurio '" + usuario.Id_Usuario + "' no existe en los registros";
+
+				return result;
 			}
 
 			metods.updateLineFile("Usuarios", content);
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "El usuario " + nombre + " " + apellido + " fue modificcado correcctamente"
-			};
+			result.resultTransaccion = false;
+			result.message = "El usuario " + nombre + " " + apellido + " fue modificcado correcctamente";
+
+			return result;
 		}
 
 		[HttpDelete]
 		[Route("EliminarUsuario")]
 		public dynamic EliminarUsuario(int id_usuario)
 		{
+			TransaccionResult result = new TransaccionResult();
+
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay usuarios registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay usuarios registrados";
+
+				return result;
 			}
 
 			bool encontrado = false;
@@ -262,20 +260,18 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El usaurio '" + id_usuario + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "El usaurio '" + id_usuario + "' no existe en los registros";
+
+				return result;
 			}
 
 			metods.updateLineFile("Usuarios", content);
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "El usuario " + nombre + " " + apellido + " fue eliminado correcctamente"
-			};
+			result.resultTransaccion = false;
+			result.message = "El usuario " + nombre + " " + apellido + " fue eliminado correcctamente";
+
+			return result;
 		}
 	}
 }
