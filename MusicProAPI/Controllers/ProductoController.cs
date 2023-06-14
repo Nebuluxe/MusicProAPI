@@ -8,6 +8,7 @@ namespace MusicProAPI.Controllers
 	public class ProductoController
 	{
 		GlobalMetods metods = new GlobalMetods();
+		TransaccionResult result = new TransaccionResult();
 
 		[HttpGet]
 		[Route("GetProductos")]
@@ -17,11 +18,10 @@ namespace MusicProAPI.Controllers
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay productos registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay productos registradas";
+
+				return result;
 			}
 
 			List<Producto> productos = new List<Producto>();
@@ -56,11 +56,10 @@ namespace MusicProAPI.Controllers
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay productos registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay productos registradas";
+
+				return result;
 			}
 
 			Producto producto = new Producto();
@@ -91,11 +90,10 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El producto '" + id_producto + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "El producto '" + id_producto + "' no existe en los registros";
+
+				return result;
 			}
 
 			return producto;
@@ -107,20 +105,18 @@ namespace MusicProAPI.Controllers
 		{
 			if (producto.Precio == 0)
 			{
-                return new
-                {
-					resultTransaccion = false,
-					message = "El precio no puede ser '0'",
-                };
-            }
+				result.resultTransaccion = false;
+				result.message = "El precio no puede ser '0'";
+
+				return result;
+			}
 
             if (string.IsNullOrEmpty(producto.Nombre) || string.IsNullOrEmpty(producto.Descripcion) || string.IsNullOrEmpty(producto.SerieProducto) || string.IsNullOrEmpty(producto.Marca) || string.IsNullOrEmpty(producto.Marca))
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "Faltan datos para almacenar el producto",
-				};
+				result.resultTransaccion = false;
+				result.message = "Faltan datos para almacenar el producto";
+
+				return result;
 			}
 
 			string[] listCategorias = metods.getContentFile("CategoriaProductos");
@@ -138,11 +134,10 @@ namespace MusicProAPI.Controllers
 
 			if (catEncontrada)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El producto '" + producto.Id_Producto + "' existe en los registros",
-				};
+				result.resultTransaccion = false;
+				result.message = "El producto '" + producto.Id_Producto + "' existe en los registros";
+
+				return result;
 			}
 
 			string[] list = metods.getContentFile("Productos");
@@ -163,11 +158,10 @@ namespace MusicProAPI.Controllers
 
 			metods.saveLineFile("Productos", String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}", producto.Id_Producto, producto.Nombre.Trim().Replace("|", ""), producto.Descripcion.Trim().Replace("|", ""), producto.SerieProducto.Trim().Replace("|", ""), producto.Marca.Trim().Replace("|", ""), producto.Categoria_id, producto.Precio, producto.FechaCreacion.Trim().Replace("|", ""), producto.FechaModificacion.Trim().Replace("|", ""),producto.Estado));
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "El producto " + producto.Nombre + " fue registrado exitosamente"
-			};
+			result.resultTransaccion = true;
+			result.message = "El producto " + producto.Nombre + " fue registrado exitosamente";
+
+			return result;
 		}
 
 		[HttpPut]
@@ -189,22 +183,20 @@ namespace MusicProAPI.Controllers
 
 			if (!catEncontrada)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "La categoria '" + producto.Id_Producto + "' no existe en los registros",
-				};
+				result.resultTransaccion = false;
+				result.message = "La categoria '" + producto.Id_Producto + "' no existe en los registros";
+
+				return result;
 			}
 
 			string[] list = metods.getContentFile("Productos");
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					mesage = "No hay productos registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay productos registrados";
+
+				return result;
 			}
 
 			bool encontrado = false;
@@ -236,20 +228,18 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El producto '" + producto.Id_Producto + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "El producto '" + producto.Id_Producto + "' no existe en los registros";
+
+				return result;
 			}
 
 			metods.updateLineFile("Productos", content);
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "El producto " + nombreProd + " fue modificado exitosamente"
-			};
+			result.resultTransaccion = true;
+			result.message = "El producto " + nombreProd + " fue modificado exitosamente";
+
+			return result;
 		}
 
 		[HttpDelete]
@@ -260,11 +250,10 @@ namespace MusicProAPI.Controllers
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay productos registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay productos registrados";
+
+				return result;
 			}
 
 			bool encontrado = false;
@@ -288,20 +277,18 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "El usaurio '" + id_producto + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "El usaurio '" + id_producto + "' no existe en los registros";
+
+				return result;
 			}
 
 			metods.updateLineFile("Productos", content);
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "El usaurio '" + nomnreProducto + "' fue eliminado exitosamente"
-			};
+			result.resultTransaccion = false;
+			result.message = "El usaurio '" + nomnreProducto + "' fue eliminado exitosamente";
+
+			return result;
 		}
 	}
 }

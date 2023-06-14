@@ -9,6 +9,7 @@ namespace MusicProAPI.Controllers
 	public class CategoriaProductoController
 	{
 		GlobalMetods metods = new GlobalMetods();
+		TransaccionResult result = new TransaccionResult();
 
 		[HttpGet]
 		[Route("GetCategorias")]
@@ -18,11 +19,10 @@ namespace MusicProAPI.Controllers
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay categorias registradas"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay categorias registradas";
+
+				return result;
 			}
 
 			List<CategoriaProducto> categorias = new List<CategoriaProducto>();
@@ -50,11 +50,10 @@ namespace MusicProAPI.Controllers
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay categorias registradas"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay categorias registradas";
+
+				return result;
 			}
 
 			CategoriaProducto categoria = new CategoriaProducto();
@@ -78,11 +77,10 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "La categoria '" + id_categoria + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "La categoria '" + id_categoria + "' no existe en los registros";
+
+				return result;
 			}
 
 			return categoria;
@@ -94,11 +92,10 @@ namespace MusicProAPI.Controllers
 		{
 			if (string.IsNullOrEmpty(categoria.Nombre) && string.IsNullOrEmpty(categoria.Descripcion))
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "Faltan datos para almacenar la categoria",
-				};
+				result.resultTransaccion = false;
+				result.message = "Faltan datos para almacenar la categoria";
+
+				return result;
 			}
 
 			string[] list = metods.getContentFile("CategoriaProductos");
@@ -119,26 +116,25 @@ namespace MusicProAPI.Controllers
 
 			metods.saveLineFile("CategoriaProductos", String.Format("{0}||{1}||{2}", categoria.Id_Categoria, categoria.Nombre.Trim().Replace("|",""), categoria.Descripcion.Trim().Replace("|", "")));
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "La categoria " + categoria.Nombre + " fue resgistrada exitosamente"
-			};
+			result.resultTransaccion = true;
+			result.message = "La categoria " + categoria.Nombre + " fue resgistrada exitosamente";
+
+			return result;
+
 		}
 
 		[HttpPut]
 		[Route("ModificarCategoria")]
-		public dynamic ModificarProducto(CategoriaProducto categoria)
+		public dynamic ModificarCategoria(CategoriaProducto categoria)
 		{
 			string[] list = metods.getContentFile("CategoriaProductos");
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay categorias registradas"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay categorias registradas";
+
+				return result;
 			}
 
 			bool encontrado = false;
@@ -167,20 +163,18 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "La categoria '" + nombreCategoria + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "La categoria '" + nombreCategoria + "' no existe en los registros";
+
+				return result;
 			}
 
 			metods.updateLineFile("CategoriaProductos", content);
 
-			return new
-			{
-				resultTransaccion = true,
-				mesage = "La categoria " + nombreCategoria + " fue modificada exitosamente"
-			};
+			result.resultTransaccion = true;
+			result.message = "La categoria " + nombreCategoria + " fue modificada exitosamente";
+
+			return result;
 		}
 
 		[HttpDelete]
@@ -191,11 +185,10 @@ namespace MusicProAPI.Controllers
 
 			if (list.Count() == 0)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "No hay categorias registrados"
-				};
+				result.resultTransaccion = false;
+				result.message = "No hay categorias registrados";
+
+				return result;
 			}
 
 			bool encontrado = false;
@@ -219,20 +212,18 @@ namespace MusicProAPI.Controllers
 
 			if (!encontrado)
 			{
-				return new
-				{
-					resultTransaccion = false,
-					message = "La categoria '" + id_categoria + "' no existe en los registros"
-				};
+				result.resultTransaccion = false;
+				result.message = "La categoria '" + id_categoria + "' no existe en los registros";
+
+				return result;
 			}
 
 			metods.updateLineFile("CategoriaProductos", content);
 
-			return new
-			{
-				resultTransaccion = true,
-				message = "La categoria " + nombreCategoria + " fue eliminada exitosamente"
-			};
+			result.resultTransaccion = false;
+			result.message = "La categoria " + nombreCategoria + " fue eliminada exitosamente";
+
+			return result;
 		}
 	}
 }

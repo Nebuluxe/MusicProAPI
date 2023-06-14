@@ -5,51 +5,94 @@ namespace MusicProAPI
 {
 	public class GlobalMetods
 	{
-		public string[] getContentFile(string NomDoc)
+		public dynamic getContentFile(string NomDoc)
 		{
-			if (!Directory.Exists("C:\\txtMusicPro"))
-			{
-				Directory.CreateDirectory("C:\\txtMusicPro");
-			}
+			TransaccionResult result = new TransaccionResult();
 
-			if (!System.IO.File.Exists("C:\\txtMusicPro\\" + NomDoc + ".txt"))
+			try
 			{
-				System.IO.File.Create("C:\\txtMusicPro\\" + NomDoc + ".txt").Close();
-			}
+				if (!Directory.Exists("C:\\txtMusicPro"))
+				{
+					Directory.CreateDirectory("C:\\txtMusicPro");
+				}
 
-			return System.IO.File.ReadAllLines("C:\\txtMusicPro\\" + NomDoc + ".txt");
+				if (!System.IO.File.Exists("C:\\txtMusicPro\\" + NomDoc + ".txt"))
+				{
+					System.IO.File.Create("C:\\txtMusicPro\\" + NomDoc + ".txt").Close();
+				}
+
+				return System.IO.File.ReadAllLines("C:\\txtMusicPro\\" + NomDoc + ".txt");
+			}
+			catch (Exception)
+			{
+				result.resultTransaccion = true;
+				result.message = "Favor intente nuevamente";
+
+				return result;
+				throw;
+			}
 		}
 
-		public void saveLineFile(string NomDoc, string lineContent)
+		public dynamic saveLineFile(string NomDoc, string lineContent)
 		{
-			if (!Directory.Exists("C:\\txtMusicPro"))
-			{
-				Directory.CreateDirectory("C:\\txtMusicPro");
-			}
+			TransaccionResult result = new TransaccionResult();
 
-			if (!System.IO.File.Exists("C:\\txtMusicPro\\" + NomDoc + ".txt"))
+			try
 			{
-				System.IO.File.Create("C:\\txtMusicPro\\" + NomDoc + ".txt").Close();
-			}
+				if (!Directory.Exists("C:\\txtMusicPro"))
+				{
+					Directory.CreateDirectory("C:\\txtMusicPro");
+				}
 
-			StreamWriter sw = System.IO.File.AppendText("C:\\txtMusicPro\\" + NomDoc + ".txt");
-			sw.WriteLine(lineContent);
-			sw.Close();
+				if (!System.IO.File.Exists("C:\\txtMusicPro\\" + NomDoc + ".txt"))
+				{
+					System.IO.File.Create("C:\\txtMusicPro\\" + NomDoc + ".txt").Close();
+				}
+
+				StreamWriter sw = System.IO.File.AppendText("C:\\txtMusicPro\\" + NomDoc + ".txt");
+				sw.WriteLine(lineContent);
+				sw.Close();
+
+				return true;
+			}
+			catch (Exception)
+			{
+				result.resultTransaccion = true;
+				result.message = "Favor intente nuevamente";
+
+				return result;
+				throw;
+			}
 		}
 
-		public void updateLineFile(string NomDoc, List<string> content)
+		public dynamic updateLineFile(string NomDoc, List<string> content)
 		{
-			if (!Directory.Exists("C:\\txtMusicPro"))
-			{
-				Directory.CreateDirectory("C:\\txtMusicPro");
-			}
+			TransaccionResult result = new TransaccionResult();
 
-			if (!System.IO.File.Exists("C:\\txtMusicPro\\" + NomDoc + ".txt"))
+			try
 			{
-				System.IO.File.Create("C:\\txtMusicPro\\" + NomDoc + ".txt").Close();
-			}
+				if (!Directory.Exists("C:\\txtMusicPro"))
+				{
+					Directory.CreateDirectory("C:\\txtMusicPro");
+				}
 
-			System.IO.File.WriteAllLines("C:\\txtMusicPro\\" + NomDoc + ".txt", content);
+				if (!System.IO.File.Exists("C:\\txtMusicPro\\" + NomDoc + ".txt"))
+				{
+					System.IO.File.Create("C:\\txtMusicPro\\" + NomDoc + ".txt").Close();
+				}
+
+				System.IO.File.WriteAllLines("C:\\txtMusicPro\\" + NomDoc + ".txt", content);
+
+				return true;
+			}
+			catch (Exception)
+			{
+				result.resultTransaccion = true;
+				result.message = "Favor intente nuevamente";
+
+				return result;
+				throw;
+			}
 		}
 	}
 }

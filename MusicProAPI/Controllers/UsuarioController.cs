@@ -6,9 +6,11 @@ namespace MusicProAPI.Controllers
 {
 	[ApiController]
 	[Route("Usuario")]
+
 	public class UsuarioController
 	{
 		GlobalMetods metods = new GlobalMetods();
+		TransaccionResult result = new TransaccionResult();
 
 		[HttpGet]
 		[Route("GetUsuarios")]
@@ -96,8 +98,6 @@ namespace MusicProAPI.Controllers
 		[Route("CrearUsuario")]
 		public dynamic CrearUsuario(Usuario usuario)
 		{
-			TransaccionResult result = new TransaccionResult();
-
 			if (string.IsNullOrEmpty(usuario.Nombre) || string.IsNullOrEmpty(usuario.Apellido) || string.IsNullOrEmpty(usuario.Correo) || string.IsNullOrEmpty(usuario.Password))
 			{
 				result.resultTransaccion = false;
@@ -153,8 +153,6 @@ namespace MusicProAPI.Controllers
 		[Route("ModificarUsuario")]
 		public dynamic ModificarUsuario(Usuario usuario)
 		{
-			TransaccionResult result = new TransaccionResult();
-
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
@@ -223,8 +221,6 @@ namespace MusicProAPI.Controllers
 		[Route("EliminarUsuario")]
 		public dynamic EliminarUsuario(int id_usuario)
 		{
-			TransaccionResult result = new TransaccionResult();
-
 			string[] list = metods.getContentFile("Usuarios");
 
 			if (list.Count() == 0)
