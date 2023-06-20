@@ -230,9 +230,16 @@ namespace MusicProTestApi
 
 			var valid = Assert.IsType<List<CarritoCompra>>(resut);
 
-			Assert.True(valid != null);
+			if (valid == null)
+			{
+				var valid2 = Assert.IsType<TransaccionResult>(resut);
 
-			List<CarritoCompra> carrs = valid;
+				Assert.True(valid2 != null);
+			}
+			else
+			{
+				Assert.True(valid != null);
+			}
 		}
 
 		[Fact]
@@ -244,11 +251,20 @@ namespace MusicProTestApi
 
 			var valid = Assert.IsType<CarritoCompra>(resut);
 
-			Assert.True(valid != null);
+			if (valid == null)
+			{
+				var valid2 = Assert.IsType<TransaccionResult>(resut);
 
-			CarritoCompra carr = valid;
+				Assert.True(valid2 != null);
+			}
+			else
+			{
+				Assert.True(valid != null);
 
-			Assert.Equal(carr?.Id_usuario, id);
+				CarritoCompra carr = valid;
+
+				Assert.Equal(carr?.Id_usuario, id);
+			}
 		}
 
 		[Fact]

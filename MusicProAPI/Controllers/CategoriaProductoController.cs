@@ -90,7 +90,7 @@ namespace MusicProAPI.Controllers
 		[Route("CrearCategoria")]
 		public dynamic CrearProducto(CategoriaProducto categoria)
 		{
-			if (string.IsNullOrEmpty(categoria.Nombre) && string.IsNullOrEmpty(categoria.Descripcion))
+			if (string.IsNullOrEmpty(categoria.Nombre) || string.IsNullOrEmpty(categoria.Descripcion))
 			{
 				result.resultTransaccion = false;
 				result.message = "Faltan datos para almacenar la categoria";
@@ -164,7 +164,7 @@ namespace MusicProAPI.Controllers
 			if (!encontrado)
 			{
 				result.resultTransaccion = false;
-				result.message = "La categoria '" + nombreCategoria + "' no existe en los registros";
+				result.message = "La categoria '" + categoria.Id_Categoria + "' no existe en los registros";
 
 				return result;
 			}

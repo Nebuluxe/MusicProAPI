@@ -58,21 +58,40 @@ namespace MusicProTestApi
 
 			var valid = Assert.IsType<List<CategoriaProducto>>(resut);
 
-			Assert.True(valid != null);
+			if (valid == null)
+			{
+				//en caso de que no hayan categorias registradas
 
-			List<CategoriaProducto> cates = valid;
+				var valid2 = Assert.IsType<TransaccionResult>(resut);
+
+				Assert.True(valid2 != null);
+			}
+			else
+			{
+				//caso de exito si existen categorias
+
+				Assert.True(valid != null);
+			}
 		}
 
 		[Fact]
 		public void GetCategoria_Test()
 		{
-			int id = categoria.Id_Categoria;
+			//prueba en caso de que un id no exista
+
+			int id = 17894161;
 
 			var resut = CategoriaProductoController.GetCategoria(id);
 
-			var valid = Assert.IsType<CategoriaProducto>(resut);
+			var valid = Assert.IsType<TransaccionResult>(resut);
 
-			Assert.True(valid != null);
+			//caso de exito en caso de que la categoria exista 
+
+			id = categoria.Id_Categoria;
+
+			resut = CategoriaProductoController.GetCategoria(id);
+
+			valid = Assert.IsType<CategoriaProducto>(resut);
 
 			CategoriaProducto cate = valid;
 
@@ -94,9 +113,24 @@ namespace MusicProTestApi
 		[Fact]
 		public void CrearCategoria_Test()
 		{
-			var resut = CategoriaProductoController.CrearProducto(categoria);
+			//prueba en caso de mandarle datos en vacio al endpoint
+
+			CategoriaProducto updatecategoria = categoria;
+
+			updatecategoria.Nombre = "";
+			updatecategoria.Descripcion = "";
+
+			var resut = CategoriaProductoController.CrearProducto(updatecategoria);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de exito en la creacion de la categoria
+
+			resut = CategoriaProductoController.CrearProducto(categoria);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}
@@ -109,9 +143,22 @@ namespace MusicProTestApi
 			updatecategoria.Nombre = "CambioNameCategoriaTest";
 			updatecategoria.Descripcion = "CambioDescripcionCategoriaTest";
 
+
+			//prueba en caso de que el id ingresado no exista
+
+			updatecategoria.Id_Categoria = 1645189;
+
 			var resut = CategoriaProductoController.ModificarCategoria(updatecategoria);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			//prueba en caso de exito que se modifique correctamente la categoria
+
+			updatecategoria.Id_Categoria = categoria.Id_Categoria;
+
+			resut = CategoriaProductoController.ModificarCategoria(updatecategoria);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}

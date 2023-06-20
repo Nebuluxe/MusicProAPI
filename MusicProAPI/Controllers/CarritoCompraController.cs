@@ -381,7 +381,7 @@ namespace MusicProAPI.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPut]
 		[Route("AñadirProductoCarrito")]
 		public dynamic AñadirProductoCarrito(int id_usuario, int id_producto, int cantidad)
 		{
@@ -549,7 +549,7 @@ namespace MusicProAPI.Controllers
 			return result;
 		}
 
-		[HttpPost]
+		[HttpPut]
 		[Route("QuitarProductoCarrito")]
 		public dynamic QuitarProductoCarrito(int id_usuario, int id_producto)
 		{

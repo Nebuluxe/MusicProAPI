@@ -152,7 +152,7 @@ namespace MusicProAPI.Controllers
 			return result;
 		}
 
-		[HttpPost]
+		[HttpPut]
 		[Route("AumentarStock")]
 		public dynamic AumentarStock(int id_producto, int cantidad)
 		{
@@ -236,7 +236,7 @@ namespace MusicProAPI.Controllers
 			return result;
 		}
 
-		[HttpPost]
+		[HttpPut]
 		[Route("RebajarStock")]
 		public dynamic RebajarStock(int id_producto, int cantidad)
 		{

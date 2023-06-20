@@ -132,10 +132,10 @@ namespace MusicProAPI.Controllers
 				}
 			}
 
-			if (catEncontrada)
+			if (!catEncontrada)
 			{
 				result.resultTransaccion = false;
-				result.message = "El producto '" + producto.Id_Producto + "' existe en los registros";
+				result.message = "La categoria '" + producto.Categoria_id + "' no existe en los registros";
 
 				return result;
 			}
@@ -171,22 +171,25 @@ namespace MusicProAPI.Controllers
             string[] listCategorias = metods.getContentFile("CategoriaProductos");
 			bool catEncontrada = false;
 
-			for (int i = 0; i < listCategorias.Count(); i++)
+			if (producto.Categoria_id != 0)
 			{
-				string[] splitArr = listCategorias[i].Split("||");
-
-				if (Convert.ToInt32(splitArr[0]) == producto.Categoria_id)
+				for (int i = 0; i < listCategorias.Count(); i++)
 				{
-					catEncontrada = true;
+					string[] splitArr = listCategorias[i].Split("||");
+
+					if (Convert.ToInt32(splitArr[0]) == producto.Categoria_id)
+					{
+						catEncontrada = true;
+					}
 				}
-			}
 
-			if (!catEncontrada)
-			{
-				result.resultTransaccion = false;
-				result.message = "La categoria '" + producto.Id_Producto + "' no existe en los registros";
+				if (!catEncontrada)
+				{
+					result.resultTransaccion = false;
+					result.message = "La categoria '" + producto.Id_Producto + "' no existe en los registros";
 
-				return result;
+					return result;
+				}
 			}
 
 			string[] list = metods.getContentFile("Productos");

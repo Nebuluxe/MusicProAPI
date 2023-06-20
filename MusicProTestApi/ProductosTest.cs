@@ -91,19 +91,42 @@ namespace MusicProTestApi
 
 			var valid = Assert.IsType<List<Producto>>(resut);
 
-			Assert.True(valid != null);
+			if (valid == null)
+			{
+				//prueba en caso de que no existan productos registrados
 
-			List<Producto> prods = valid;
+				var valid2 = Assert.IsType<TransaccionResult>(resut);
+
+				Assert.True(valid2 != null);
+			}
+			else
+			{
+				//prueba en caso de exito y que existan productos registrados 
+
+				Assert.True(valid != null);
+			}
 		}
 
 		[Fact]
 		public void GetProducto_Test()
 		{
-			int id = producto.Id_Producto;
+			//prueba en caso de que el id ingresado no exista en los registros
+
+			int id = 519465;
 
 			var resut = ProductoController.GetProducto(id);
 
-			var valid = Assert.IsType<Producto>(resut);
+			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de exito que el id exista 
+
+			id = producto.Id_Producto;
+
+			resut = ProductoController.GetProducto(id);
+
+			valid = Assert.IsType<Producto>(resut);
 
 			Assert.True(valid != null);
 
@@ -115,11 +138,21 @@ namespace MusicProTestApi
 		[Fact]
 		public void EliminarProducto_Test()
 		{
-			int id = producto.Id_Producto;
+			//prueba en caso de que el id ingresado no existe dentro de los registros
+
+			int id = 8489491;
 
 			var resut = ProductoController.EliminarProducto(id);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			//pruea en caso de exito que el id exita
+
+			id = producto.Id_Producto;
+
+			resut = ProductoController.EliminarProducto(id);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}
@@ -127,9 +160,46 @@ namespace MusicProTestApi
 		[Fact]
 		public void CrearProducto_Test()
 		{
-			var resut = ProductoController.CrearProducto(producto);
+			Producto testproducto = producto;
+
+			//prueba en caso de que el precio tenga un valor de 0
+
+			testproducto.Precio = 0;
+
+			var resut = ProductoController.CrearProducto(testproducto);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de que alguno de los datos vengan en vacio
+
+			testproducto = producto;
+			testproducto.Nombre = "";
+			testproducto.Descripcion = "";
+			testproducto.SerieProducto = "";
+
+			resut = ProductoController.CrearProducto(testproducto);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de que el id de categoria asociado al producto no exista 
+
+			testproducto = producto;
+
+			resut = ProductoController.CrearProducto(testproducto);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//caso de exito de creacion de producto
+
+			resut = ProductoController.CrearProducto(producto);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}
@@ -147,9 +217,34 @@ namespace MusicProTestApi
 			updateproducto.Precio = 0;
 			updateproducto.Estado = true;
 
+			//prueba en caso de que la categoria asociada al producto no exista
+
+			updateproducto.Categoria_id = 8514656;
+
 			var resut = ProductoController.ModificarProducto(updateproducto);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//caso de prueb en caso de que el producto ingresado no exista
+
+			updateproducto.Id_Producto = 4654646;
+
+			resut = ProductoController.ModificarProducto(updateproducto);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de exito que el producto se modifique exitosamente
+
+			updateproducto.Id_Producto = producto.Id_Producto;
+			updateproducto.Categoria_id = 999999999;
+
+			resut = ProductoController.ModificarProducto(updateproducto);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}

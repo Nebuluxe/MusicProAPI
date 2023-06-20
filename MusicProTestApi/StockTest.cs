@@ -116,9 +116,16 @@ namespace MusicProTestApi
 
 			var valid = Assert.IsType<List<Stock>>(resut);
 
-			Assert.True(valid != null);
+			if (valid == null)
+			{
+				var valid2 = Assert.IsType<TransaccionResult>(resut);
 
-			List<Stock> stos = valid;
+				Assert.True(valid2 != null);
+			}
+			else
+			{
+				Assert.True(valid != null);
+			}
 		}
 
 		[Fact]
@@ -152,9 +159,42 @@ namespace MusicProTestApi
 		[Fact]
 		public void CrearStock_Test()
 		{
-			var resut = StockController.CrearStock(stock.Id_Producto, stock.CantidadStock);
+			Stock teststock = stock;
+
+			//prueba en caso de que el id  del producto no exista en los registros
+
+			teststock.Id_Producto = 56156165;
+
+			var resut = StockController.CrearStock(teststock.Id_Producto, teststock.CantidadStock);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de que la cantidad de stock inicnial sea 0
+
+			teststock.Id_Producto = stock.Id_Producto;
+			teststock.CantidadStock = 0;
+
+			resut = StockController.CrearStock(teststock.Id_Producto, teststock.CantidadStock);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de exito que el stock se crea
+
+			resut = StockController.CrearStock(stock.Id_Producto, stock.CantidadStock);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de que el producto ya tenga un stock creado
+
+			resut = StockController.CrearStock(stock.Id_Producto, stock.CantidadStock);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}
@@ -162,9 +202,34 @@ namespace MusicProTestApi
 		[Fact]
 		public void AumentarStock_Test()
 		{
-			var resut = StockController.AumentarStock(stock.Id_Producto, 100);
+			Stock teststock = stock;
+
+			//prueba en caso de que el id  del producto no exista en los registros
+
+			teststock.Id_Producto = 56156165;
+
+			var resut = StockController.AumentarStock(teststock.Id_Producto, 100);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de que la cantidad de stock inicnial sea 0
+
+			teststock.Id_Producto = stock.Id_Producto;
+			teststock.CantidadStock = 0;
+
+			resut = StockController.AumentarStock(teststock.Id_Producto, teststock.CantidadStock);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
+
+			Assert.True(valid != null);
+
+			//prueba en caso de que el producto ya tenga un stock creado
+
+			resut = StockController.AumentarStock(stock.Id_Producto, 100);
+
+			valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}
