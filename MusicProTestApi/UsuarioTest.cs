@@ -77,41 +77,49 @@ namespace MusicProTestApi
 		[Fact]
 		public void GetUsuario_Test()
 		{
-			int id = usuario.Id_Usuario;
+            //prueba en caso de que el id ingresado no exista
 
-			var resut = UsuarioController.GetUsuario(id);
+            var resut = UsuarioController.GetUsuario(518914);
 
-			var valid = Assert.IsType<Usuario>(resut);
+            var valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+            //rueba en caso de exito que encuentre el usaurio
+
+            int id = usuario.Id_Usuario;
+
+		    resut = UsuarioController.GetUsuario(id);
+
+		    valid = Assert.IsType<Usuario>(resut);
 
 			Assert.True(valid != null);
 
 			Usuario user = valid;
 
 			Assert.Equal(user?.Id_Usuario, id);
-
-			//prueba en caso de que el id ingresado no exista
-
-			resut = UsuarioController.GetUsuario(518914);
-
-			valid = Assert.IsType<TransaccionResult>(resut);
-
-			Assert.True(valid != null);
 		}
 
 		[Fact]
 		public void EliminarUsuario_Test()
 		{
-			int id = usuario.Id_Usuario;
+			//prueba en caso de que el id del usuario no exista 
 
-			var resut = UsuarioController.EliminarUsuario(id);
+			int id = 51651;
 
-			var valid = Assert.IsType<TransaccionResult>(resut);
+            var resut = UsuarioController.EliminarUsuario(id);
 
-			Assert.True(valid != null);
+            var valid = Assert.IsType<TransaccionResult>(resut);
 
-			resut = UsuarioController.EliminarUsuario(1416849);
+            Assert.True(valid != null);
 
-			valid = Assert.IsType<TransaccionResult>(resut);
+			//prueba en caso de exito y que se elimine el usuario
+
+            id = usuario.Id_Usuario;
+
+		    resut = UsuarioController.EliminarUsuario(id);
+
+		    valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}

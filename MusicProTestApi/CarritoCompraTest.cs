@@ -16,8 +16,11 @@ namespace MusicProTestApi
 
 		CarritoCompra carrito = new CarritoCompra();
 		Usuario usuario = new Usuario();
+		int id_producto1test = 0;
+        int id_producto2test = 0;
 
-		public CarritoCompraTest()
+
+        public CarritoCompraTest()
 		{
 			CarritoCompraController = new CarritoCompraController();
 
@@ -123,10 +126,12 @@ namespace MusicProTestApi
 				if (i == 0)
 				{
 					producto.Id_Producto = 999999999;
+					id_producto1test = producto.Id_Producto;
 				}
 				else
 				{
 					producto.Id_Producto = 888888888;
+					id_producto2test = producto.Id_Producto;
 				}
 
 				producto.Nombre = "NombreProductoTest";
@@ -232,12 +237,16 @@ namespace MusicProTestApi
 
 			if (valid == null)
 			{
+				//prueba en caso de que no existan carritos creado	
+
 				var valid2 = Assert.IsType<TransaccionResult>(resut);
 
 				Assert.True(valid2 != null);
 			}
 			else
 			{
+				//prueba en caso de que se ecneuntren carritos enccreados
+
 				Assert.True(valid != null);
 			}
 		}
@@ -245,58 +254,121 @@ namespace MusicProTestApi
 		[Fact]
 		public void GetCarrito_Test()
 		{
-			int id = usuario.Id_Usuario;
+            //prueba en caso de que el id del usaurio ingresado no exista en los registros
 
-			var resut = CarritoCompraController.GetCarrito(id);
+            int id = 519465;
 
-			var valid = Assert.IsType<CarritoCompra>(resut);
+            var resut = CarritoCompraController.GetCarrito(id);
 
-			if (valid == null)
-			{
-				var valid2 = Assert.IsType<TransaccionResult>(resut);
+            var valid = Assert.IsType<TransaccionResult>(resut);
 
-				Assert.True(valid2 != null);
-			}
-			else
-			{
-				Assert.True(valid != null);
+            Assert.True(valid != null);
 
-				CarritoCompra carr = valid;
+            //prueba en caso de exito que el id del usuario exista y que tenga un carrito
 
-				Assert.Equal(carr?.Id_usuario, id);
-			}
-		}
+            id = usuario.Id_Usuario;
+
+            resut = CarritoCompraController.GetCarrito(id);
+
+            valid = Assert.IsType<CarritoCompra>(resut);
+
+            Assert.True(valid != null);
+
+            CarritoCompra carrito = valid;
+
+            Assert.Equal(carrito?.Id_usuario, id);
+        }
 
 		[Fact]
 		public void EliminarCarrito_Test()
 		{
-			int id = carrito.Id_Carrito;
+            //prueba en caso de que el id del usuario ingresado no exista en los registros
 
-			var resut = CarritoCompraController.EliminarCarrito(id);
+            int id = 519465;
 
-			var valid = Assert.IsType<TransaccionResult>(resut);
+            var resut = CarritoCompraController.EliminarCarrito(id);
 
-			Assert.True(valid != null);
-		}
+            var valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+			//prueba en caso de exito que se logre eliminar el carrito del usuario
+
+			id = usuario.Id_Usuario;
+
+            resut = CarritoCompraController.EliminarCarrito(id);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+        }
 
 		[Fact]
 		public void QuitarProductoCarrito_Test()
 		{
-			var resut = CarritoCompraController.QuitarProductoCarrito(usuario.Id_Usuario, 999999999);
+            //prueba en caso de que el id del usuario ingresado no exista en los registros
 
-			var valid = Assert.IsType<TransaccionResult>(resut);
+            int id = 519465;
 
-			Assert.True(valid != null);
-		}
+            var resut = CarritoCompraController.QuitarProductoCarrito(id, id_producto1test);
+
+            var valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+            //prueba en caso de que el id del producto ingresado no exista en los registros
+
+            int id_productonoexiste = 519465;
+
+            resut = CarritoCompraController.AñadirProductoCarrito(id, id_productonoexiste, 1);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+            //prueba en caso de exito que se logre quitar un producto del carrito el carrito del usuario
+
+            id = usuario.Id_Usuario;
+
+            resut = CarritoCompraController.QuitarProductoCarrito(id, id_producto1test);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+        }
 
 		[Fact]
 		public void AñadirProductoCarrito_Test()
 		{
-			var resut = CarritoCompraController.AñadirProductoCarrito(usuario.Id_Usuario, 999999999, 1);
+            //prueba en caso de que el id del usuario ingresado no exista en los registros
+
+            int id = 519465;
+
+			var resut = CarritoCompraController.AñadirProductoCarrito(id, id_producto1test, 1);
 
 			var valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
-		}
+
+            //prueba en caso de que el id del producto ingresado no exista en los registros
+
+            int id_productonoexiste = 519465;
+
+			resut = CarritoCompraController.AñadirProductoCarrito(id, id_productonoexiste, 1);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+            //prueba en caso de exito que se logre añadir un producto del carrito el carrito del usuario
+
+            id = usuario.Id_Usuario;
+
+            resut = CarritoCompraController.AñadirProductoCarrito(id, id_producto1test, 1);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+        }
 	}
 }

@@ -118,12 +118,16 @@ namespace MusicProTestApi
 
 			if (valid == null)
 			{
+				//prueba en caso de que no encuentre stock creado
+
 				var valid2 = Assert.IsType<TransaccionResult>(resut);
 
 				Assert.True(valid2 != null);
 			}
 			else
 			{
+				//prueba en casoso de que enceuntre stock
+
 				Assert.True(valid != null);
 			}
 		}
@@ -131,27 +135,53 @@ namespace MusicProTestApi
 		[Fact]
 		public void GetStock_Test()
 		{
-			int id = stock.Id_Producto;
+            //prueba en caso de que el id ingresado no exista en los registros
 
-			var resut = StockController.GetStockProducto(id);
+            int id = 519465;
 
-			var valid = Assert.IsType<Stock>(resut);
+            var resut = StockController.GetStockProducto(id);
 
-			Assert.True(valid != null);
+            var valid = Assert.IsType<TransaccionResult>(resut);
 
-			Stock sto = valid;
+            Assert.True(valid != null);
 
-			Assert.Equal(sto?.Id_Producto, id);
-		}
+            //prueba en caso de exito que el id exista 
+
+            id = stock.Id_Producto;
+
+            resut = StockController.GetStockProducto(id);
+
+            valid = Assert.IsType<Stock>(resut);
+
+            Assert.True(valid != null);
+
+            Stock prod = valid;
+
+            Assert.Equal(prod?.Id_Producto, id);
+        }
 
 		[Fact]
 		public void EliminarStock_Test()
 		{
-			int id = stock.Id_Producto;
+            int id = stock.Id_Producto;
 
-			var resut = StockController.EliminarStock(id);
+			//prueba en caso de que el id  del producto no exista en los registros
 
-			var valid = Assert.IsType<TransaccionResult>(resut);
+			id = 457478654;
+
+            var resut = StockController.EliminarStock(id);
+
+            var valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+			//prueba en caso de equito que se logre eliminar el stock de producto
+
+            id = stock.Id_Producto;
+
+		    resut = StockController.EliminarStock(id);
+
+		    valid = Assert.IsType<TransaccionResult>(resut);
 
 			Assert.True(valid != null);
 		}
@@ -214,7 +244,7 @@ namespace MusicProTestApi
 
 			Assert.True(valid != null);
 
-			//prueba en caso de que la cantidad de stock inicnial sea 0
+			//prueba en caso de que la cantidad de stock sea 0
 
 			teststock.Id_Producto = stock.Id_Producto;
 			teststock.CantidadStock = 0;
@@ -225,7 +255,7 @@ namespace MusicProTestApi
 
 			Assert.True(valid != null);
 
-			//prueba en caso de que el producto ya tenga un stock creado
+			//prueba en caso de que se efectue el aumento de stock
 
 			resut = StockController.AumentarStock(stock.Id_Producto, 100);
 
@@ -237,11 +267,37 @@ namespace MusicProTestApi
 		[Fact]
 		public void RebajarStock_Test()
 		{
-			var resut = StockController.RebajarStock(stock.Id_Producto, 100);
 
-			var valid = Assert.IsType<TransaccionResult>(resut);
+            Stock teststock = stock;
 
-			Assert.True(valid != null);
-		}
+            //prueba en caso de que el id  del producto no exista en los registros
+
+            teststock.Id_Producto = 56156165;
+
+            var resut = StockController.RebajarStock(teststock.Id_Producto, 100);
+
+            var valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+            //prueba en caso de que la cantidad de stock sea 0
+
+            teststock.Id_Producto = stock.Id_Producto;
+            teststock.CantidadStock = 0;
+
+            resut = StockController.RebajarStock(teststock.Id_Producto, teststock.CantidadStock);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+
+            //prueba en caso de que se efectue la rebaja de stock
+
+            resut = StockController.RebajarStock(stock.Id_Producto, 100);
+
+            valid = Assert.IsType<TransaccionResult>(resut);
+
+            Assert.True(valid != null);
+        }
 	}
 }

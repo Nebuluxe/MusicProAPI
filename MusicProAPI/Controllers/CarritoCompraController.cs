@@ -73,8 +73,30 @@ namespace MusicProAPI.Controllers
 		{
 			string[] listCarrito = metods.getContentFile("CarritoCompras");
 			string[] listDetCarritos = metods.getContentFile("DetalleCarritoCompras");
+            string[] listUsuarios = metods.getContentFile("Usuarios");
 
-			if (listCarrito.Count() == 0)
+            bool ussuarioencontrado = false;
+
+            for (int i = 0; i < listUsuarios.Count(); i++)
+            {
+                string[] splitArr = listUsuarios[i].Split("||");
+
+                if (Convert.ToInt32(splitArr[0]) == id_usuario)
+                {
+                    ussuarioencontrado = true;
+                }
+            }
+
+            if (!ussuarioencontrado)
+            {
+                result.resultTransaccion = false;
+                result.message = "El usuario '" + id_usuario + "' no existe en los registros";
+
+                return result;
+            }
+
+
+            if (listCarrito.Count() == 0)
 			{
 				result.resultTransaccion = false;
 				result.message = "No hay carritos registrados";
@@ -387,7 +409,7 @@ namespace MusicProAPI.Controllers
 		{
 			string[] listUsuarios = metods.getContentFile("Usuarios");
 
-			bool prodEncontrada = false;
+			bool ussuarioencontrado = false;
 
 			for (int i = 0; i < listUsuarios.Count(); i++)
 			{
@@ -395,11 +417,11 @@ namespace MusicProAPI.Controllers
 
 				if (Convert.ToInt32(splitArr[0]) == id_usuario)
 				{
-					prodEncontrada = true;
+                    ussuarioencontrado = true;
 				}
 			}
 
-			if (!prodEncontrada)
+			if (!ussuarioencontrado)
 			{
 				result.resultTransaccion = false;
 				result.message = "El usuario '" + id_usuario + "' no existe en los registros";
